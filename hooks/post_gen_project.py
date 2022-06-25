@@ -6,7 +6,6 @@ import logging
 import os
 import os.path
 import shutil
-import subprocess
 import sys
 from pathlib import Path
 from typing import List
@@ -26,16 +25,15 @@ COOKIECUTTER_JSON = """{{ cookiecutter | tojson('  ') }}"""
 # {% raw %}
 COOKIECUTTER = json.loads(COOKIECUTTER_JSON)
 
-namespace_init = '''#!/usr/bin/env python3
-# vim: set filetype=python tw=100 cc=+1:
-# https://setuptools.readthedocs.io/en/latest/pkg_resources.html#id5
-# https://www.python.org/dev/peps/pep-0420/#namespace-packages-today
-"""
-This is a namespace package in line with PEP-0420.
-"""
+# namespace_init = '''#!/usr/bin/env python3
+# # https://setuptools.readthedocs.io/en/latest/pkg_resources.html#id5
+# # https://www.python.org/dev/peps/pep-0420/#namespace-packages-today
+# """
+# This is a namespace package in line with PEP-0420.
+# """
 
-__path__ = __import__('pkgutil').extend_path(__path__, __name__)
-'''
+# __path__ = __import__('pkgutil').extend_path(__path__, __name__)
+# '''
 
 
 def apply() -> None:
@@ -87,16 +85,16 @@ def apply() -> None:
     else:
         logger.info("Not writing %s as it already exists", cookiecutter_input_path)
 
-    for index, _ in enumerate(namespace_parts[0:-1]):
-        namespace_path = Path("src").joinpath(
-            *namespace_parts[0 : index + 1], "__init__.py"
-        )
-        logger.info("namespace_path = %s", namespace_path)
-        with open(namespace_path, "wb+") as file_object:
-            file_object.write(namespace_init.encode("utf-8"))
+    # for index, _ in enumerate(namespace_parts[0:-1]):
+    #     namespace_path = Path("src").joinpath(
+    #         *namespace_parts[0 : index + 1], "__init__.py"
+    #     )
+    #     logger.info("namespace_path = %s", namespace_path)
+    #     with open(namespace_path, "wb+") as file_object:
+    #         file_object.write(namespace_init.encode("utf-8"))
 
-    subprocess.run(["versioneer", "install"])
-    subprocess.run(["make", "versioneer"])
+    # subprocess.run(["versioneer", "install"])
+    # subprocess.run(["make", "versioneer"])
 
 
 def main() -> None:
