@@ -1,14 +1,26 @@
+# https://python-poetry.org/docs/pyproject/
+# https://www.python.org/dev/peps/pep-0621/
 [tool.poetry]
-name = "aucampia.cookiecutter-python"
-version = "0.0.0"
+name = "{{ cookiecutter.project_name }}"
+version = "{{ cookiecutter.version }}"
 description = ""
-license = "CC0-1.0"
-readme = "README.md"
 authors = []
+license = "{{ cookiecutter.sdpx_license_identifier }}"
+readme = "README.md"
+packages = [
+    {include = "*", from = "src"},
+]
+
+[tool.poetry.scripts]
+"{{ cookiecutter.cli_name }}" = "{{ cookiecutter.python_package_fqname }}.cli:main"
+
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^{{ cookiecutter.python_version }}"
+pydantic = ">=1"
 PyYAML = ">=6"
+structlog = ">=21"
+typer = ">=0"
 
 [tool.poetry.dev-dependencies]
 black = ">=22"
@@ -17,17 +29,16 @@ flake8 = ">=4"
 flake8-black = ">=0"
 flake8-bugbear = ">=22"
 flake8-isort = ">=4"
-flake8-bandit = ">=2"
 isort = ">=5"
 mypy = ">=0"
 pep8-naming = ">=0"
 pycln = ">=1"
 pytest = ">=7"
-pytest-cookies = ">=0"
 pytest-cov = ">=3"
 safety = ">=1"
+types-click = ">=7"
 types-PyYAML = ">=6"
-pyupgrade = ">=2"
+typing-extensions = ">=4"
 
 [tool.coverage.report]
 # https://coverage.readthedocs.io/en/coverage-5.0/config.html
@@ -36,10 +47,10 @@ show_missing = true
 [tool.isort]
 # https://pycqa.github.io/isort/docs/configuration/config_files.html
 profile = "black"
-src_paths = ["hooks", "tests"]
+src_paths = ["src", "tests"]
 
 [tool.pytest.ini_options]
-addopts = ["--cov-config=pyproject.toml"]
+addopts = ["--cov-config=pyproject.toml", "--cov=src"]
 # https://docs.pytest.org/en/stable/customize.html
 # https://docs.pytest.org/en/stable/reference.html#configuration-options
 log_cli = true
@@ -49,25 +60,15 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 
 [tool.mypy]
 # https://mypy.readthedocs.io/en/stable/config_file.html
-files = "hooks,tests"
-python_version = "3.7"
+files = "src,tests"
+mypy_path = "src"
+python_version = "{{ cookiecutter.python_version }}"
 strict = true
 warn_unreachable = true
 warn_unused_configs = true
 explicit_package_bases = true
 namespace_packages = true
 
-[[tool.mypy.overrides]]
-module = "pytest_cookies.*"
-ignore_missing_imports = true
-
-[tool.pycln]
-# https://hadialqattan.github.io/pycln/#/?id=cli-options
-# https://hadialqattan.github.io/pycln/#/?id=example
-paths = ["hooks", "tests"]
-
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["setuptools","poetry-core>=1.0.0","poetry-dynamic-versioning"]
 build-backend = "poetry.core.masonry.api"
-

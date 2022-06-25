@@ -4,17 +4,45 @@ import json
 import logging
 import os
 import os.path
-import pathlib
+from pathlib import Path
 import sys
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
+
+# handler = logging.StreamHandler(sys.stderr)
+# formatter = logging.Formatter(
+#     datefmt="%Y-%m-%dT%H:%M:%S",
+#     fmt=(
+#         "%(asctime)s %(process)d %(thread)x %(levelno)03d:%(levelname)-8s "
+#         "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
+#     ),
+# )
+# handler.setFormatter(formatter)
+
+
+# logging.basicConfig(
+#     level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
+#     stream=sys.stderr,
+#     datefmt="%Y-%m-%dT%H:%M:%S",
+#     format=(
+#         "%(asctime)s.%(msecs)03d %(process)d %(thread)d %(levelno)03d:%(levelname)-8s "
+#         "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
+#     ),
+# )
 
 logger = logging.getLogger(
     __name__ if __name__ != "__main__" else "hooks.pre_gen_project"
 )
 
-SCRIPT_PATH = pathlib.Path(__file__)
-COOKIE_PATH = SCRIPT_PATH.parent.parent
+# logger.setLevel("DEBUG")
+# logger.propagate = True
+# logger.addHandler(handler)
+
+# sys.stderr.write("... HERE?")
+# logger.info("here ...")
+
+
+
 
 
 # {% endraw %}
@@ -22,17 +50,19 @@ COOKIECUTTER_JSON = """{{ cookiecutter | tojson('  ') }}"""
 # {% raw %}
 COOKIECUTTER = json.loads(COOKIECUTTER_JSON)
 
+SCRIPT_PATH = Path(__file__)
+COOKIE_PATH = SCRIPT_PATH.parent.parent
+
 
 def apply() -> None:
     logger.info("entry: ...")
     logger.info("os.getcwd() = %s", os.getcwd())
-    logger.info("__file__ = %s", __file__)
     logger.info("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.info("COOKIE_PATH = %s", COOKIE_PATH.absolute())
     logger.info("cookiecutter_json = %s", COOKIECUTTER_JSON)
 
-    for key, value in os.environ.items():
-        logger.info("os.environ[%s] -> %s", key, value)
+    # for key, value in os.environ.items():
+    #     logger.debug("os.environ[%s] -> %s", key, value)
 
     # env = jinja2.sandbox.SandboxedEnvironment(keep_trailing_newline=True)
 
@@ -85,6 +115,7 @@ def main() -> None:
             "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
         ),
     )
+    apply()
 
 
 if __name__ == "__main__":

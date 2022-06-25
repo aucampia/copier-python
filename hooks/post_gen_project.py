@@ -10,9 +10,18 @@ import sys
 from pathlib import Path
 from typing import List
 
-import yaml
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
+
+# logging.basicConfig(
+#     level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
+#     stream=sys.stderr,
+#     datefmt="%Y-%m-%dT%H:%M:%S",
+#     format=(
+#         "%(asctime)s.%(msecs)03d %(process)d %(thread)d %(levelno)03d:%(levelname)-8s "
+#         "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
+#     ),
+# )
 
 logger = logging.getLogger(
     __name__ if __name__ != "__main__" else "hooks.post_gen_project"
@@ -36,13 +45,19 @@ COOKIECUTTER = json.loads(COOKIECUTTER_JSON)
 # '''
 
 
+SCRIPT_PATH = Path(__file__)
+COOKIE_PATH = SCRIPT_PATH.parent.parent
+
 def apply() -> None:
-    logger.info("entry: os.getcwd() = %s, SCRIPT_PATH = %s", os.getcwd(), SCRIPT_PATH)
-    logger.info("COOKIECUTTER_JSON = %s", COOKIECUTTER_JSON)
+    logger.info("entry: ...")
+    logger.info("os.getcwd() = %s", os.getcwd())
+    logger.info("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
+    logger.info("COOKIE_PATH = %s", COOKIE_PATH.absolute())
+    logger.info("cookiecutter_json = %s", COOKIECUTTER_JSON)
 
     cwd_path = Path.cwd()
 
-    tdir_package_path = cwd_path.joinpath("src", "tdir-package")
+    pkg_files_path = cwd_path.joinpath("pkg_files")
     namespace_parts: List[str] = COOKIECUTTER["python_package_fqname"].split(".")
     logger.info("namespace_parts = %s", namespace_parts)
     namespace_path = cwd_path.joinpath("src", *namespace_parts)
@@ -51,12 +66,12 @@ def apply() -> None:
     logger.info("will make namespace_path %s", namespace_path)
     namespace_path.mkdir(parents=True, exist_ok=True)
     logger.info(
-        "will copytree tdir_package_path %s to namespace_path %s",
-        tdir_package_path,
+        "will copytree pkg_files_path %s to namespace_path %s",
+        pkg_files_path,
         namespace_path,
     )
     distutils.dir_util.copy_tree(
-        str(tdir_package_path),
+        str(pkg_files_path),
         str(namespace_path),
         preserve_mode=0,
         preserve_times=0,
@@ -64,16 +79,19 @@ def apply() -> None:
         update=1,
         verbose=1,
     )
-    logger.info("will rmtree tdir_package_path %s", tdir_package_path)
-    shutil.rmtree(tdir_package_path)
+    logger.info("will rmtree pkg_files_path %s", pkg_files_path)
+    shutil.rmtree(pkg_files_path)
 
     cookiecutter_input_path = cwd_path.joinpath("cookiecutter-input.yaml")
     if not cookiecutter_input_path.exists():
         try:
+            import yaml
+
             logger.info("Writing cookiecutter input to %s", cookiecutter_input_path)
             with open(cwd_path.joinpath("cookiecutter-input.yaml"), "w") as file_object:
                 data = {"default_context": COOKIECUTTER.copy()}
                 del data["default_context"]["_template"]
+                del data["default_context"]["_output_dir"]
                 # json.dump(data, file_object, indent=2, sort_keys=True)
                 yaml.safe_dump(data, file_object)
                 # file_object.write('\n')
@@ -107,6 +125,7 @@ def main() -> None:
             "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
         ),
     )
+    apply()
 
 
 if __name__ == "__main__":
