@@ -1,0 +1,131 @@
+# https://taskfile.dev/usage/
+# https://pkg.go.dev/text/template
+# https://go-task.github.io/slim-sprig/
+version: "3"
+
+vars:
+  PYTHON: python
+  POETRY: "{{.PYTHON}} -m poetry"
+  RUN_PREFIX: "{{.POETRY}} run"
+  RUN_PYTHON: "{{.RUN_PREFIX}} python"
+  PY_SOURCE: "hooks tests"
+
+tasks:
+  configure:
+    desc: Configure this project
+    tasks:
+      - "{{.POETRY}} install"
+
+  black:
+    desc: Run black
+    vars:
+      CHECK: false
+    cmds:
+      - '{{.RUN_PYTHON}} -m black {{if (ne .CHECK "false")}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+
+  isort:
+    desc: Run isort
+    vars:
+      CHECK: false
+    cmds:
+      - '{{.RUN_PYTHON}} -m isort {{if (ne .CHECK "false")}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+
+  pycln:
+    desc: Run pycln
+    vars:
+      CHECK: false
+    cmds:
+      - echo ".CHECK = {{.CHECK}}"
+      - '{{.RUN_PYTHON}} -m pycln --config=pyproject.toml {{if (ne .CHECK "false")}}--check --diff{{end}} {{.CLI_ARGS}}'
+
+  flake8:
+    desc: Run flake8
+    cmds:
+      - "{{.RUN_PYTHON}} -m flake8 {{.CLI_ARGS}}"
+
+  mypy:
+    desc: Run mypy
+    cmds:
+      - "{{.RUN_PYTHON}} -m mypy --show-error-context --show-error-codes"
+
+  codespell:
+    desc: Run codespell
+    cmds:
+      - "{{.RUN_PREFIX}} codespell {{.CLI_ARGS | default .PY_SOURCE}}"
+
+
+  safety-check:
+    desc: Run safety check
+    cmds:
+      - "{{.POETRY}} export --without-hashes --dev --format requirements.txt | {{.RUN_PYTHON}} -m safety check --full-report --stdin"
+
+  test:
+    desc: Run tests
+    cmds:
+      - "{{.RUN_PYTHON}} -m pytest {{.CLI_ARGS}}"
+
+  validate:static:
+    desc: Perform static validation
+    cmds:
+      - task: mypy
+      - task: codespell
+      - task: isort
+        vars: { CHECK: true }
+      - task: black
+        vars: { CHECK: true }
+      - task: flake8
+      - task: safety-check
+
+  validate:fix:
+    desc: Fix auto-fixable validation errors.
+    cmds:
+      - task: pycln
+      - task: isort
+      - task: black
+
+  validate:
+    desc: Perform all validation
+    cmds:
+      - task: validate:static
+      - task: test
+
+  clean:
+    desc: Clean everything
+    cmds:
+      - task: clean:mypy
+      - task: venv:clean
+
+
+  # lint:fix:
+  #   desc: Fix auto-fixable linting errors
+  #   cmds:
+  #     - "{{._PYTHON}} -m black ."
+  #     - "{{._PYTHON}} -m isort ."
+
+  # lint:
+  #   desc: Perform linting
+  #   cmds:
+  #     - "{{._PYTHON}} -m isort --check --diff ."
+  #     - "{{._PYTHON}} -m black --check --diff ."
+  #     - task: flake8
+
+
+  default:
+    desc: Run validate
+    cmds:
+      - task: validate
+
+  _rimraf:
+    # This task is a utility task for recursively removing directories, it is
+    # similar to rm -rf but not identical and it should work wherever there is
+    # a python interpreter. The name is inspired by
+    # <https://www.npmjs.com/package/rimraf>.
+    - cmd: |
+        {{.PYTHON}} -c '
+        from pathlib import Path;
+        import sys, shutil;
+        for path in sys.argv[1:]:
+          if Path(path).exists():
+            sys.stderr.write(f"removing {path}\n")
+            shutil.rmtree(path, ignore_errors=True)
+        ' {{.RIMRAF_TARGET}}

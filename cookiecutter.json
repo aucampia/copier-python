@@ -1,0 +1,10 @@
+{
+  "full_name": null,
+  "project_name": null,
+  "python_package_fqname": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "project_url": null,
+  "project_dirname": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
+  "project_short_description": "{{ cookiecutter.project_name }}",
+  "cli_name": "{{ cookiecutter.python_package_fqname + '.cli.py' }}",
+  "license_code": "UNLICENSED"
+}
