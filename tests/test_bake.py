@@ -1,25 +1,19 @@
-from encodings import utf_8, utf_8_sig
 import hashlib
 import json
 import logging
 import os
 import pickle
-import random
-import string
 import subprocess
-from dataclasses import asdict, dataclass, field
-from pathlib import Path, PurePath
-from tempfile import mkdtemp
 import tempfile
-from typing import Any, Callable, Dict, List, Mapping, Set, TypeVar
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Callable, Dict, Mapping, Set, TypeVar
 
+import pytest
 from cookiecutter.generate import generate_context
 from cookiecutter.main import cookiecutter
 from cookiecutter.prompt import prompt_for_config
 from frozendict import frozendict
-from libcst import Call
-import pytest
-from pytest_cookies.plugin import Cookies, Result
 
 # @dataclass
 # class OSPath:
@@ -74,6 +68,9 @@ AnyT = TypeVar("AnyT")
 # class HashableDict(dict[AnyT, AnyT]):
 #     def __hash__(self) -> int:
 #         return hash(tuple(sorted(self.items())))
+
+TEST_RAPID = json.loads(os.environ.get("TEST_RAPID", "false"))
+assert isinstance(TEST_RAPID, bool)
 
 
 def hash_path(
@@ -132,17 +129,20 @@ class Baker:
     def bake(self, extra_context: Dict[str, Any], template_path: Path) -> BakeResult:
         context_file = template_path / "cookiecutter.json"
 
-        template_path_hash = hash_path(
-            template_path,
-            exclude_subdirs={
-                ".mypy_cache",
-                ".pytest_cache",
-                ".venv",
-                ".git",
-                "var",
-                "tests",
-            },
-        )
+        if TEST_RAPID:
+            template_path_hash = hash_object(template_path)
+        else:
+            template_path_hash = hash_path(
+                template_path,
+                exclude_subdirs={
+                    ".mypy_cache",
+                    ".pytest_cache",
+                    ".venv",
+                    ".git",
+                    "var",
+                    "tests",
+                },
+            )
 
         key = BakeKey(template_path, template_path_hash, frozendict(extra_context))
 
@@ -157,7 +157,7 @@ class Baker:
         output_context_path = output_path.parent / f"{output_path.name}-context.json"
         output_project_path = output_path.parent / f"{output_path.name}-project.json"
 
-        if output_path.exists():
+        if output_path.exists() and not TEST_RAPID:
 
             output_context = json.loads(output_context_path.read_text())
             output_project = json.loads(output_project_path.read_text())
@@ -187,6 +187,7 @@ class Baker:
             extra_context=extra_context,
             output_dir=str(output_path),
             # config_file=str(self._config_file),
+            overwrite_if_exists=True if TEST_RAPID else False,
         )
         project_path = Path(project_dir)
 
@@ -215,10 +216,6 @@ class Baker:
         """,
             ],
         )
-
-        subprocess.run(cwd=baked.project_path, args=["bash", "-xc", "pwd"])
-        logging.info("running task validate in %s", baked.project_path)
-        subprocess.run(cwd=baked.project_path, args=["task", "validate"])
 
         return baked
 
@@ -257,7 +254,19 @@ def test_bake_validates(context: Dict[str, Any]) -> None:
     # result = BAKER.bake(asdict(extra_context), template_path=PROJECT_PATH)
     result = BAKER.bake(context, template_path=PROJECT_PATH)
     logging.info("result = %s", result)
-    subprocess.run(cwd=result.project_path, env=ESCAPED_ENV, args=["task", "validate"])
+    subprocess.run(
+        cwd=result.project_path,
+        env=ESCAPED_ENV,
+        args=[
+            "bash",
+            "-c",
+            """
+    set -eo pipefail
+    set -x
+    task validate
+    """,
+        ],
+    )
 
     # result: Result = cookies.bake(extra_context=asdict(extra_context))
     # logging.info("result = %s", result)

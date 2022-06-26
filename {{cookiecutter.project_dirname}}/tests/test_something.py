@@ -1,8 +1,8 @@
 import logging
-import os
-import sys
+
+from {{cookiecutter.python_package_fqname}} import package_function
 
 
 def test_something() -> None:
     logging.info("entry: ...")
-    assert sys.path[0] != os.name
+    assert package_function() == "value"

@@ -17,27 +17,20 @@ tasks:
       - "{{.POETRY}} install {{.CLI_ARGS}}"
   black:
     desc: Run black
-    vars:
-      CHECK: false
     cmds:
-      - '{{.RUN_PYTHON}} -m black {{if (ne .CHECK "false")}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+      - '{{.RUN_PYTHON}} -m black {{if (ne (.CHECK | default "false") "false")}}--check --diff {{end}}{{.CLI_ARGS | default .PY_SOURCE}}'
   isort:
     desc: Run isort
-    vars:
-      CHECK: false
     cmds:
-      - '{{.RUN_PYTHON}} -m isort {{if (ne .CHECK "false")}}--check --diff {{end}}{{.CLI_ARGS | default "."}}'
+      - '{{.RUN_PYTHON}} -m isort {{if (ne (.CHECK | default "false") "false")}}--check --diff {{end}}{{.CLI_ARGS | default .PY_SOURCE}}'
   pycln:
     desc: Run pycln
-    vars:
-      CHECK: false
     cmds:
-      - echo ".CHECK = {{.CHECK}}"
-      - '{{.RUN_PYTHON}} -m pycln --config=pyproject.toml {{if (ne .CHECK "false")}}--check --diff{{end}} {{.CLI_ARGS}}'
+      - '{{.RUN_PYTHON}} -m pycln --config=pyproject.toml {{if (ne (.CHECK | default "false") "false")}}--check --diff{{end}} {{.CLI_ARGS | default .PY_SOURCE}}'
   flake8:
     desc: Run flake8
     cmds:
-      - "{{.RUN_PYTHON}} -m flake8 {{.CLI_ARGS}}"
+      - "{{.RUN_PYTHON}} -m flake8 {{.CLI_ARGS | default .PY_SOURCE}}"
   mypy:
     desc: Run mypy
     cmds:
