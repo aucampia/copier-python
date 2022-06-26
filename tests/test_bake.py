@@ -18,19 +18,6 @@ from cookiecutter.main import cookiecutter
 from cookiecutter.prompt import prompt_for_config
 from frozendict import frozendict
 
-# @dataclass
-# class OSPath:
-#     parts: List[str]
-
-#     @classmethod
-#     def from_str(cls, input: str) -> "OSPath":
-#         parts = input.split(os.pathsep)
-#         return cls(parts)
-
-
-# def split_os_path(path: str) -> List[str]:
-#     return path.split(os.pathsep)
-
 
 SCRIPT_PATH = Path(__file__)
 PROJECT_PATH = SCRIPT_PATH.parent.parent
@@ -77,11 +64,6 @@ class BakeResult(BakeKey):
 
 
 AnyT = TypeVar("AnyT")
-
-
-# class HashableDict(dict[AnyT, AnyT]):
-#     def __hash__(self) -> int:
-#         return hash(tuple(sorted(self.items())))
 
 TEST_RAPID = json.loads(os.environ.get("TEST_RAPID", "false"))
 assert isinstance(TEST_RAPID, bool)

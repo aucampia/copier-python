@@ -8,7 +8,7 @@
   "sdpx_license_identifier": "UNLICENSED",
   "version": "0.0.0",
   "python_version": "3.7",
-  "init_git": ["y", "n"],
-  "use_structlog": ["y", "n"],
-  "use_poetry_dynamic_versioning": ["y", "n"]
+  "init_git": "y",
+  "use_structlog": "y",
+  "use_poetry_dynamic_versioning": "y"
 }

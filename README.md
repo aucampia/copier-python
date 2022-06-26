@@ -2,7 +2,7 @@
 
 
 ```bash
-cookiecutter -v ./ --overwrite-if-exists -o var/baked/tmp
+cookiecutter -v gh:aucampia/cookiecutter-python --overwrite-if-exists -o var/baked/tmp
 
 
 \rm -rv var/baked/tmp
