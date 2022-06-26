@@ -4,11 +4,24 @@ import os
 import sys
 from typing import List, Optional
 
-import structlog
 import typer
-from structlog.types import Processor
 
 from ._version import __version__
+
+# --{% if False %}
+BARRIER = 1
+# --{% endif %}
+
+# --{% if cookiecutter.use_structlog == "y" %}
+import structlog
+from structlog.types import Processor
+
+# --{% endif %}
+
+# --{% if False %}
+BARRIER = 1
+# --{% endif %}
+
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +52,6 @@ def cli_callback(
             - min(max(0, verbosity - 1), 9) * 1
         )
         root_logger.setLevel(new_level)
-
     logger.debug(
         "entry: ctx.parent.params = %s, ctx.params = %s",
         ({} if ctx.parent is None else ctx.parent.params),
@@ -86,6 +98,7 @@ def main() -> None:
     cli()
 
 
+# --{% if cookiecutter.use_structlog == "y" %}
 def setup_logging(console: bool = False) -> None:
     shared_processors: List[Processor] = []
     structlog.configure(
@@ -146,6 +159,49 @@ def setup_logging(console: bool = False) -> None:
     root_logger.setLevel(os.environ.get("PYLOGGING_LEVEL", logging.INFO))
     root_logger.addHandler(log_handler)
 
+
+# --{% else %}
+def setup_logging() -> None:
+    logging.basicConfig(
+        level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
+        stream=sys.stderr,
+        datefmt="%Y-%m-%dT%H:%M:%S",
+        format=(
+            "%(asctime)s.%(msecs)03d %(process)d %(thread)d %(levelno)03d:%(levelname)-8s "
+            "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
+        ),
+    )
+
+    # _BLANK_LOGRECORD = logging.LogRecord("name", 0, "pathname", 0, "msg", tuple(), None)
+
+    # def get_extra(record: logging.LogRecord) -> Dict[str, str]:
+    #     extra: Dict[str, str] = {}
+    #     for key, value in record.__dict__.items():
+    #         if key not in _BLANK_LOGRECORD.__dict__:
+    #             extra[key] = value
+    #     return extra
+
+    # class ExtraLogFormatter(logging.Formatter):
+    #     def format(self, record: logging.LogRecord) -> str:
+    #         record.__dict__["extra"] = get_extra(record)
+    #         return super().format(record)
+
+    # handler = logging.StreamHandler(sys.stderr)
+    # formatter = ExtraLogFormatter(
+    #     datefmt="%Y-%m-%dT%H:%M:%S",
+    #     fmt=(
+    #         "%(asctime)s %(process)d %(thread)x %(levelno)03d:%(levelname)-8s "
+    #         "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s %(extra)s"
+    #     ),
+    # )
+    # handler.setFormatter(formatter)
+    # root_logger = logging.getLogger("")
+    # root_logger.propagate = True
+    # root_logger.setLevel(os.environ.get("PYLOGGING_LEVEL", logging.INFO))
+    # root_logger.addHandler(handler)
+
+
+# --{% endif %}
 
 if __name__ == "__main__":
     main()

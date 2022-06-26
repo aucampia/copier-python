@@ -78,6 +78,22 @@ tasks:
     desc: Run validate
     cmds:
       - task: validate
+  venv:run:
+    desc: Run args in the venv
+    cmds:
+      - "{{.RUN_PREFIX}} {{.CLI_ARGS}}"
+  venv:python:
+    desc: Run python in the venv
+    cmds:
+      - "{{.RUN_PYTHON}} {{.CLI_ARGS}}"
+  examples:
+    desc: Build examples
+    cmds:
+      - task: _rimraf
+        vars: { RIMRAF_TARGET: "examples" }
+      - "{{.RUN_PYTHON}} -m cookiecutter ./ -o examples --no-input --config-file tests/data/cookie-config/defaults.yaml"
+      - "{{.RUN_PYTHON}} -m cookiecutter ./ -o examples --no-input --config-file tests/data/cookie-config/everything.yaml"
+      - "{{.RUN_PYTHON}} -m cookiecutter ./ -o examples --no-input --config-file tests/data/cookie-config/minimal.yaml"
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is

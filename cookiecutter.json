@@ -1,12 +1,14 @@
 {
-  "project_name": null,
+  "project_name": "example.project",
   "python_package_fqname": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "project_url": "https://example.com/project",
   "project_dirname": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
   "project_short_description": "{{ cookiecutter.project_name }}",
-  "cli_name": "{{ cookiecutter.python_package_fqname + '.cli.py' }}",
+  "cli_name": "{{ cookiecutter.python_package_fqname + '-cli' }}",
   "sdpx_license_identifier": "UNLICENSED",
   "version": "0.0.0",
   "python_version": "3.7",
-  "init_git": ["y", "n"]
+  "init_git": ["y", "n"],
+  "use_structlog": ["y", "n"],
+  "use_poetry_dynamic_versioning": ["y", "n"]
 }

@@ -53,10 +53,10 @@ COOKIE_PATH = SCRIPT_PATH.parent.parent
 
 def apply() -> None:
     logger.info("entry: ...")
-    logger.info("os.getcwd() = %s", os.getcwd())
-    logger.info("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
-    logger.info("COOKIE_PATH = %s", COOKIE_PATH.absolute())
-    logger.info("cookiecutter_json = %s", COOKIECUTTER_JSON)
+    logger.debug("os.getcwd() = %s", os.getcwd())
+    logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
+    logger.debug("COOKIE_PATH = %s", COOKIE_PATH.absolute())
+    logger.debug("cookiecutter_json = %s", COOKIECUTTER_JSON)
 
     # for key, value in os.environ.items():
     #     logger.debug("os.environ[%s] -> %s", key, value)

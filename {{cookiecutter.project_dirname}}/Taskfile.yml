@@ -79,6 +79,18 @@ tasks:
     desc: Run validate
     cmds:
       - task: validate
+  cli:
+    desc: Run cli
+    cmds:
+      - '{{.RUN_PREFIX}} {% endraw %}{{ cookiecutter.cli_name }}{% raw %} {{.CLI_ARGS}}'
+  venv:run:
+    desc: Run args in the venv
+    cmds:
+      - '{{.RUN_PREFIX}} {{.CLI_ARGS}}'
+  venv:python:
+    desc: Run python in the venv
+    cmds:
+      - '{{.RUN_PYTHON}} {{.CLI_ARGS}}'
   _rimraf:
     # This task is a utility task for recursively removing directories, it is
     # similar to rm -rf but not identical and it should work wherever there is

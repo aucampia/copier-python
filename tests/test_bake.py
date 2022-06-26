@@ -1,4 +1,6 @@
+from cmath import e
 import hashlib
+import itertools
 import json
 import logging
 import os
@@ -7,13 +9,15 @@ import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Mapping, Set, TypeVar
+from typing import Any, Callable, Dict, Generator, Mapping, Set, TypeVar
 
 import pytest
 from cookiecutter.generate import generate_context
 from cookiecutter.main import cookiecutter
 from cookiecutter.prompt import prompt_for_config
 from frozendict import frozendict
+import yaml
+from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 # @dataclass
 # class OSPath:
@@ -31,6 +35,17 @@ from frozendict import frozendict
 
 SCRIPT_PATH = Path(__file__)
 PROJECT_PATH = SCRIPT_PATH.parent.parent
+TEST_DATA_PATH = SCRIPT_PATH.parent / "data"
+
+
+def load_test_config(name: str) -> Dict[str, Any]:
+    config = yaml.safe_load(
+        (TEST_DATA_PATH / "cookie-config" / f"{name}.yaml").read_text()
+    )
+    # default_context = config["default_context"]
+    assert isinstance(config, dict)
+    logging.info("name = %s, config = %s", name, config)
+    return config
 
 
 def escape_venv(environ: Mapping[str, str]) -> Dict[str, str]:
@@ -205,14 +220,16 @@ class Baker:
         subprocess.run(
             cwd=baked.project_path,
             env=ESCAPED_ENV,
+            check=True,
             args=[
                 "bash",
                 "-c",
                 """
             set -x
             set -eo pipefail
-            env | sort
+            # env | sort
             task configure
+            task validate:fix
         """,
             ],
         )
@@ -222,99 +239,64 @@ class Baker:
 
 BAKER = Baker()
 
-
-# def baked() -> None:
-#     # Render the context, so that we can store it on the Result
-#     context = prompt_for_config(
-#         generate_context(context_file=str(context_file), extra_context=extra_context),
-#         no_input=True,
-#     )
-
-#     # Run cookiecutter to generate a new project
-#     project_dir = cookiecutter(
-#         template,
-#         no_input=True,
-#         extra_context=extra_context,
-#         output_dir=str(self._new_output_dir()),
-#         config_file=str(self._config_file),
-#     )
+# EXTRA_CONTEXTS = [
+#     default_context("defaults"),
+#     default_context("minimal"),
+#     default_context("everything"),
+# ]
 
 
-CONTEXTS = [{"project_name": "example.project.name"}]
+def make_baked_cmd_cases() -> Generator[ParameterSet, None, None]:
+    config_names = {"defaults", "minimal", "everything"}
+    for config_name, (cmd_name, cmd) in itertools.product(
+        config_names,
+        [
+            (
+                "validate",
+                lambda result: "task validate",
+            ),
+            (
+                "cli",
+                lambda result: f'task venv:run -- {result.context["cli_name"]} -vvvv sub leaf',
+            ),
+        ],
+    ):
+        extra_context = load_test_config(config_name)["default_context"]
+        if config_name == "everything":
+            extra_context["init_git"] = "y"
+        yield pytest.param(extra_context, cmd, id=f"{config_name}-{cmd_name}")
 
 
-@pytest.mark.parametrize("context", CONTEXTS)
-def test_bake_validates(context: Dict[str, Any]) -> None:
-    # @dataclass
-    # class ExtraContext:
-    #     project_name: str = "example.project.name"
-
-    # extra_context = ExtraContext()
-    # logging.info("extra_context = %s", extra_context)
-    # result = BAKER.bake(asdict(extra_context), template_path=PROJECT_PATH)
-    result = BAKER.bake(context, template_path=PROJECT_PATH)
+@pytest.mark.parametrize(
+    ["extra_context", "cmd"],
+    make_baked_cmd_cases()
+    # [
+    #     (extra_context, cmd)
+    #     for extra_context, cmd in itertools.product(
+    #         EXTRA_CONTEXTS,
+    #         [
+    #             lambda result: "task validate",
+    #             lambda result: f'task venv:run -- {result.context["cli_name"]} -vvvv sub leaf',
+    #         ],
+    #     )
+    # ],
+)
+def test_baked_cmd(
+    extra_context: Dict[str, Any], cmd: Callable[[BakeResult], str]
+) -> None:
+    result = BAKER.bake(extra_context, template_path=PROJECT_PATH)
     logging.info("result = %s", result)
     subprocess.run(
         cwd=result.project_path,
         env=ESCAPED_ENV,
+        check=True,
         args=[
             "bash",
             "-c",
-            """
-    set -eo pipefail
-    set -x
-    task validate
+            f"""
+set -eo pipefail
+set -x
+{cmd(result)}
     """,
         ],
     )
-
-    # result: Result = cookies.bake(extra_context=asdict(extra_context))
-    # logging.info("result = %s", result)
-    # assert result.exit_code == 0
-    # assert result.exception is None
-
-    # assert result.project_path.name == extra_context.project_name
-    # assert result.project_path.is_dir()
-
-    # logging.info("running poetry install in %s", result.output_path)
-
-    # env = escape_venv(os.environ)
-
-    # env = {**os.environ}
-    # virtual_env_path = Path(env["VIRTUAL_ENV"])
-    # del env["VIRTUAL_ENV"]
-    # ospath_parts = split_os_path(env["PATH"])
-    # use_ospath_parts = []
-    # for ospath_part in ospath_parts:
-    #     ospath_part_path = Path(ospath_part)
-    #     if not ospath_part_path.is_relative_to(virtual_env_path):
-    #         use_ospath_parts.append(ospath_part)
-    # use_ospath = os.pathsep.join(use_ospath_parts)
-    # logging.info("use_ospath = %s", use_ospath)
-    # env["PATH"] = use_ospath
-
-    # subprocess.run(
-    #     cwd=result.output_path,
-    #     env=env,
-    #     args=[
-    #         "bash",
-    #         "-c",
-    #         """
-    #     set -x
-    #     set -eo pipefail
-    #     env | sort
-    #     # ls -ald
-    #     # pwd
-    #     # which python
-    #     # python --version
-    #     # python -m poetry --version
-    #     task configure
-    #     # find .
-    #     task validate
-    # """,
-    #     ],
-    # )
-
-    # subprocess.run(cwd=result.project_path, args=["bash", "-xc", "pwd"])
-    # logging.info("running task validate in %s", result.project_path)
-    # subprocess.run(cwd=result.project_path, args=["task", "validate"])

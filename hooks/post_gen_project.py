@@ -51,22 +51,22 @@ COOKIE_PATH = SCRIPT_PATH.parent.parent
 
 def apply() -> None:
     logger.info("entry: ...")
-    logger.info("os.getcwd() = %s", os.getcwd())
-    logger.info("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
-    logger.info("COOKIE_PATH = %s", COOKIE_PATH.absolute())
-    logger.info("cookiecutter_json = %s", COOKIECUTTER_JSON)
+    logger.debug("os.getcwd() = %s", os.getcwd())
+    logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
+    logger.debug("COOKIE_PATH = %s", COOKIE_PATH.absolute())
+    logger.debug("cookiecutter_json = %s", COOKIECUTTER_JSON)
 
     cwd_path = Path.cwd()
 
     pkg_files_path = cwd_path.joinpath("pkg_files")
     namespace_parts: List[str] = COOKIECUTTER["python_package_fqname"].split(".")
-    logger.info("namespace_parts = %s", namespace_parts)
+    logger.debug("namespace_parts = %s", namespace_parts)
     namespace_path = cwd_path.joinpath("src", *namespace_parts)
-    logger.info("will make namespace_path.parent %s", namespace_path.parent)
+    logger.debug("will make namespace_path.parent %s", namespace_path.parent)
     namespace_path.parent.mkdir(parents=True, exist_ok=True)
-    logger.info("will make namespace_path %s", namespace_path)
+    logger.debug("will make namespace_path %s", namespace_path)
     namespace_path.mkdir(parents=True, exist_ok=True)
-    logger.info(
+    logger.debug(
         "will copytree pkg_files_path %s to namespace_path %s",
         pkg_files_path,
         namespace_path,
@@ -80,7 +80,7 @@ def apply() -> None:
         update=1,
         verbose=1,
     )
-    logger.info("will rmtree pkg_files_path %s", pkg_files_path)
+    logger.debug("will rmtree pkg_files_path %s", pkg_files_path)
     shutil.rmtree(pkg_files_path)
 
     cookiecutter_input_path = cwd_path.joinpath("cookiecutter-input.yaml")
