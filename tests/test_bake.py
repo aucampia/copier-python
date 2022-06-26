@@ -1,4 +1,3 @@
-from cmath import e
 import hashlib
 import itertools
 import json
@@ -12,12 +11,12 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Generator, Mapping, Set, TypeVar
 
 import pytest
+import yaml
+from _pytest.mark.structures import ParameterSet
 from cookiecutter.generate import generate_context
 from cookiecutter.main import cookiecutter
 from cookiecutter.prompt import prompt_for_config
 from frozendict import frozendict
-import yaml
-from _pytest.mark.structures import Mark, MarkDecorator, ParameterSet
 
 # @dataclass
 # class OSPath:
@@ -247,7 +246,7 @@ BAKER = Baker()
 
 
 def make_baked_cmd_cases() -> Generator[ParameterSet, None, None]:
-    config_names = {"defaults", "minimal", "everything"}
+    config_names = {"minimal", "everything"}
     for config_name, (cmd_name, cmd) in itertools.product(
         config_names,
         [

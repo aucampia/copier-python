@@ -1,0 +1,4 @@
+poetry
+poetry-dynamic-versioning
+jinja2
+dunamai<1.6.0

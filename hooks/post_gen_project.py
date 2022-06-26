@@ -13,16 +13,6 @@ from typing import List
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
 
-# logging.basicConfig(
-#     level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
-#     stream=sys.stderr,
-#     datefmt="%Y-%m-%dT%H:%M:%S",
-#     format=(
-#         "%(asctime)s.%(msecs)03d %(process)d %(thread)d %(levelno)03d:%(levelname)-8s "
-#         "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
-#     ),
-# )
-
 logger = logging.getLogger(
     __name__ if __name__ != "__main__" else "hooks.post_gen_project"
 )
@@ -33,16 +23,7 @@ SCRIPT_PATH = Path(__file__)
 COOKIECUTTER_JSON = """{{ cookiecutter | tojson('  ') }}"""
 # {% raw %}
 COOKIECUTTER = json.loads(COOKIECUTTER_JSON)
-
-# namespace_init = '''#!/usr/bin/env python3
-# # https://setuptools.readthedocs.io/en/latest/pkg_resources.html#id5
-# # https://www.python.org/dev/peps/pep-0420/#namespace-packages-today
-# """
-# This is a namespace package in line with PEP-0420.
-# """
-
-# __path__ = __import__('pkgutil').extend_path(__path__, __name__)
-# '''
+assert isinstance(COOKIECUTTER, dict)
 
 
 SCRIPT_PATH = Path(__file__)
@@ -104,18 +85,9 @@ def apply() -> None:
     else:
         logger.info("Not writing %s as it already exists", cookiecutter_input_path)
 
-    subprocess.run(["git", "init"])
-
-    # for index, _ in enumerate(namespace_parts[0:-1]):
-    #     namespace_path = Path("src").joinpath(
-    #         *namespace_parts[0 : index + 1], "__init__.py"
-    #     )
-    #     logger.info("namespace_path = %s", namespace_path)
-    #     with open(namespace_path, "wb+") as file_object:
-    #         file_object.write(namespace_init.encode("utf-8"))
-
-    # subprocess.run(["versioneer", "install"])
-    # subprocess.run(["make", "versioneer"])
+    init_git = COOKIECUTTER.get("init_git", "n") == "y"
+    if init_git:
+        subprocess.run(["git", "init"])
 
 
 def main() -> None:

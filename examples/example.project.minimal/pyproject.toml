@@ -1,22 +1,22 @@
 # https://python-poetry.org/docs/pyproject/
 # https://www.python.org/dev/peps/pep-0621/
 [tool.poetry]
-name = "{{ cookiecutter.project_name }}"
-version = "{{ cookiecutter.version }}"
+name = "example.project.minimal"
+version = "0.0.0"
 description = ""
 authors = []
-license = "{{ cookiecutter.sdpx_license_identifier }}"
+license = "UNLICENSED"
 readme = "README.md"
 packages = [
     {include = "*", from = "src"},
 ]
 
 [tool.poetry.scripts]
-"{{ cookiecutter.cli_name }}" = "{{ cookiecutter.python_package_fqname }}.cli:main"
+"example.project.minimal-cli" = "example.project.minimal.cli:main"
 
 
 [tool.poetry.dependencies]
-python = "^{{ cookiecutter.python_version }}"
+python = "^3.7"
 pydantic = ">=1"
 PyYAML = ">=6"
 structlog = ">=21"
@@ -63,34 +63,17 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 # https://mypy.readthedocs.io/en/stable/config_file.html
 files = "src,tests"
 mypy_path = "src"
-python_version = "{{ cookiecutter.python_version }}"
+python_version = "3.7"
 strict = true
 warn_unreachable = true
 warn_unused_configs = true
 explicit_package_bases = true
 namespace_packages = true
 
-# {% if cookiecutter.use_poetry_dynamic_versioning == "y" %}
-# {% raw %}
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-format-jinja = """
-    {%- if distance == 0 -%}
-        {{ serialize_pep440(base=base, stage=stage, revision=revision) }}
-    {%- else -%}
-        {{ serialize_pep440(base=bump_version(base), stage=stage, revision=revision, dev=distance, metadata=[commit, "dirty"] if dirty else None ) | replace(".dev", "a") }}
-    {%- endif -%}
-"""
-[tool.poetry-dynamic-versioning.substitution]
-files=["src/**/_version.py"]
-# {% endraw %}
-# {% endif %}
+# 
 
 [build-system]
-# {% if cookiecutter.use_poetry_dynamic_versioning == "y" %}
-requires = ["setuptools","poetry-core>=1.0.0","poetry-dynamic-versioning"]
-# {% else %}
+# 
 requires = ["setuptools","poetry-core>=1.0.0"]
-# {% endif %}
+# 
 build-backend = "poetry.core.masonry.api"
