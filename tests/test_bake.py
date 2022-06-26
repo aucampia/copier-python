@@ -101,9 +101,6 @@ def hash_path(
             logging.debug("relative_dirname = %s", relative_dirname)
             if str(relative_dirname) in exclude_subdirs:
                 dirnames.remove(dirname)
-        # for exclude_subdir in exclude_subdirs:
-        #     if exclude_subdir in dirnames:
-        #         dirnames.remove(exclude_subdir)
         dirnames.sort()
         filenames.sort()
         logging.info("dirpath = %s", dirpath)
@@ -118,8 +115,6 @@ def hash_path(
             hasher.update(file_path.read_bytes())
 
     return hasher.hexdigest()
-    # with file_path.open("rb") as bytes_io:
-    #     hasher.update(bytes_io)
 
 
 def hash_object(
@@ -238,12 +233,6 @@ class Baker:
 
 BAKER = Baker()
 
-# EXTRA_CONTEXTS = [
-#     default_context("defaults"),
-#     default_context("minimal"),
-#     default_context("everything"),
-# ]
-
 
 def make_baked_cmd_cases() -> Generator[ParameterSet, None, None]:
     config_names = {"minimal", "everything"}
@@ -266,20 +255,7 @@ def make_baked_cmd_cases() -> Generator[ParameterSet, None, None]:
         yield pytest.param(extra_context, cmd, id=f"{config_name}-{cmd_name}")
 
 
-@pytest.mark.parametrize(
-    ["extra_context", "cmd"],
-    make_baked_cmd_cases()
-    # [
-    #     (extra_context, cmd)
-    #     for extra_context, cmd in itertools.product(
-    #         EXTRA_CONTEXTS,
-    #         [
-    #             lambda result: "task validate",
-    #             lambda result: f'task venv:run -- {result.context["cli_name"]} -vvvv sub leaf',
-    #         ],
-    #     )
-    # ],
-)
+@pytest.mark.parametrize(["extra_context", "cmd"], make_baked_cmd_cases())
 def test_baked_cmd(
     extra_context: Dict[str, Any], cmd: Callable[[BakeResult], str]
 ) -> None:
