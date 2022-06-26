@@ -29,6 +29,7 @@ flake8 = ">=4"
 flake8-black = ">=0"
 flake8-bugbear = ">=22"
 flake8-isort = ">=4"
+flake8-bandit = ">=2"
 isort = ">=5"
 mypy = ">=0"
 pep8-naming = ">=0"
@@ -68,6 +69,21 @@ warn_unreachable = true
 warn_unused_configs = true
 explicit_package_bases = true
 namespace_packages = true
+
+# {% raw %}
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+format-jinja = """
+    {%- if distance == 0 -%}
+        {{ serialize_pep440(base=base, stage=stage, revision=revision) }}
+    {%- else -%}
+        {{ serialize_pep440(base=bump_version(base), stage=stage, revision=revision, dev=distance, metadata=[commit, "dirty"] if dirty else None ) | replace(".dev", "a") }}
+    {%- endif -%}
+"""
+[tool.poetry-dynamic-versioning.substitution]
+files=["src/**/_version.py"]
+# {% endraw %}
 
 [build-system]
 requires = ["setuptools","poetry-core>=1.0.0","poetry-dynamic-versioning"]

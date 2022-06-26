@@ -4,8 +4,8 @@ import json
 import logging
 import os
 import os.path
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
 
@@ -40,9 +40,6 @@ logger = logging.getLogger(
 
 # sys.stderr.write("... HERE?")
 # logger.info("here ...")
-
-
-
 
 
 # {% endraw %}

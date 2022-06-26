@@ -7,7 +7,7 @@ readme = "README.md"
 authors = []
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 PyYAML = ">=6"
 
 [tool.poetry.dev-dependencies]
@@ -27,7 +27,10 @@ pytest-cookies = ">=0"
 pytest-cov = ">=3"
 safety = ">=1"
 types-PyYAML = ">=6"
-pyupgrade = ">=2"
+poetry = ">=1"
+cookiecutter = "^2.1.1"
+frozendict = "^2.3.2"
+types-frozendict = "^2.0.9"
 
 [tool.coverage.report]
 # https://coverage.readthedocs.io/en/coverage-5.0/config.html
@@ -39,9 +42,15 @@ profile = "black"
 src_paths = ["hooks", "tests"]
 
 [tool.pytest.ini_options]
-addopts = ["--cov-config=pyproject.toml"]
 # https://docs.pytest.org/en/stable/customize.html
 # https://docs.pytest.org/en/stable/reference.html#configuration-options
+testpaths=[
+    "tests"
+]
+addopts = [
+    "--cov-config=pyproject.toml",
+    "--capture=no"
+]
 log_cli = true
 log_cli_level = "DEBUG"
 log_cli_format = "%(asctime)s %(process)d %(thread)d %(levelno)03d:%(levelname)-8s %(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
@@ -50,7 +59,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 [tool.mypy]
 # https://mypy.readthedocs.io/en/stable/config_file.html
 files = "hooks,tests"
-python_version = "3.7"
+python_version = "3.10"
 strict = true
 warn_unreachable = true
 warn_unused_configs = true
@@ -61,11 +70,14 @@ namespace_packages = true
 module = "pytest_cookies.*"
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "cookiecutter.*"
+ignore_missing_imports = true
+
 [tool.pycln]
 # https://hadialqattan.github.io/pycln/#/?id=cli-options
 # https://hadialqattan.github.io/pycln/#/?id=example
 paths = ["hooks", "tests"]
-
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

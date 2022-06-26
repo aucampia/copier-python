@@ -7,5 +7,6 @@
   "cli_name": "{{ cookiecutter.python_package_fqname + '.cli.py' }}",
   "sdpx_license_identifier": "UNLICENSED",
   "version": "0.0.0",
-  "python_version": "3.7"
+  "python_version": "3.7",
+  "init_git": ["y", "n"]
 }

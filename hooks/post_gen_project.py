@@ -6,10 +6,10 @@ import logging
 import os
 import os.path
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import List
-
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
 
@@ -47,6 +47,7 @@ COOKIECUTTER = json.loads(COOKIECUTTER_JSON)
 
 SCRIPT_PATH = Path(__file__)
 COOKIE_PATH = SCRIPT_PATH.parent.parent
+
 
 def apply() -> None:
     logger.info("entry: ...")
@@ -102,6 +103,8 @@ def apply() -> None:
             )
     else:
         logger.info("Not writing %s as it already exists", cookiecutter_input_path)
+
+    subprocess.run(["git", "init"])
 
     # for index, _ in enumerate(namespace_parts[0:-1]):
     #     namespace_path = Path("src").joinpath(

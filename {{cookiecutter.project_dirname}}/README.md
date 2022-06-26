@@ -2,5 +2,5 @@
 
 ```bash
 poetry install
-poetry run {{  }}
+poetry run {{ cookiecutter.cli_name }}
 ```

@@ -1,6 +1,7 @@
 # https://taskfile.dev/usage/
 # https://pkg.go.dev/text/template
 # https://go-task.github.io/slim-sprig/
+# {% raw %}
 version: "3"
 
 vars:
@@ -99,3 +100,4 @@ tasks:
             sys.stderr.write(f"removing {path}\n")
             shutil.rmtree(path, ignore_errors=True)
         ' {{.RIMRAF_TARGET}}
+# {% endraw %}
