@@ -18,7 +18,6 @@ from cookiecutter.main import cookiecutter
 from cookiecutter.prompt import prompt_for_config
 from frozendict import frozendict
 
-
 SCRIPT_PATH = Path(__file__)
 PROJECT_PATH = SCRIPT_PATH.parent.parent
 TEST_DATA_PATH = SCRIPT_PATH.parent / "data"

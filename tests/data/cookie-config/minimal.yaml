@@ -1,6 +1,0 @@
-default_context:
-  project_name: "example.project.minimal"
-  init_git: "n"
-  use_structlog: "n"
-  use_poetry_dynamic_versioning: "n"
-
