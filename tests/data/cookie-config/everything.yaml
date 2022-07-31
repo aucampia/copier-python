@@ -1,0 +1,3 @@
+default_context:
+  project_name: "example.project.everything"
+  init_git: "n"
