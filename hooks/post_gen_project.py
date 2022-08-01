@@ -69,8 +69,8 @@ def apply() -> None:
         update=1,
         verbose=1,
     )
-    logger.debug("will rmtree pkg_files_path %s", pkg_files_path)
-    shutil.rmtree(pkg_files_path)
+    logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
+    shutil.rmtree(pkg_files_path.parent)
 
     cookiecutter_input_path = cwd_path.joinpath("cookiecutter-input.yaml")
     if not cookiecutter_input_path.exists():
