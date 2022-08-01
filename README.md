@@ -7,11 +7,13 @@ cruft create ~/sw/d/github.com/aucampia/cookiecutter-python
 
 
 \rm -rv var/baked/tmp
-rm -rf ~/.cookiecutters/cookiecutter-*
 
 cookiecutter -vvvv ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
-# WARNING: cruft works from HEAD
+# WARNING: cruft works from HEAD so commit first
 cruft create ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
+
+(cd var/baked/tmp/example.project.basic && task configure)
+(cd var/baked/tmp/example.project.basic && task validate:fix validate)
 ```
 
 
