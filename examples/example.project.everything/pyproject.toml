@@ -19,8 +19,10 @@ packages = [
 python = "^3.7"
 pydantic = ">=1"
 PyYAML = ">=6"
+# 
 structlog = ">=21"
 typer = ">=0"
+# 
 
 [tool.poetry.dev-dependencies]
 black = ">=22"
@@ -51,6 +53,7 @@ profile = "black"
 src_paths = ["src", "tests"]
 
 [tool.pytest.ini_options]
+testpaths = ["tests"]
 addopts = ["--cov-config=pyproject.toml", "--cov=src"]
 # https://docs.pytest.org/en/stable/customize.html
 # https://docs.pytest.org/en/stable/reference.html#configuration-options

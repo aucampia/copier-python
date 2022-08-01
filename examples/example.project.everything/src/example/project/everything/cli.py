@@ -4,22 +4,13 @@ import os
 import sys
 from typing import List, Optional
 
+import structlog
 import typer
+from structlog.types import FilteringBoundLogger, Processor
 
 from ._version import __version__
 
-# --
-
-# --
-import structlog
-from structlog.types import Processor
-
-# --
-
-# --
-
-
-logger = logging.getLogger(__name__)
+logger: FilteringBoundLogger = structlog.get_logger(__name__)
 
 """
 https://click.palletsprojects.com/en/7.x/api/#parameters
@@ -49,14 +40,13 @@ def cli_callback(
         )
         root_logger.setLevel(new_level)
     logger.debug(
-        "entry: ctx.parent.params = %s, ctx.params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
+        "entry",
+        ctx_parent_params=({} if ctx.parent is None else ctx.parent.params),
+        ctx_params=ctx.params,
     )
     logger.debug(
-        "logging.level = %s, LOGGER.level = %s",
-        logging.getLogger("").getEffectiveLevel(),
-        logger.getEffectiveLevel(),
+        "log info",
+        logging_effective_level=logging.getLogger("").getEffectiveLevel(),
     )
 
 
@@ -69,9 +59,9 @@ def cli_version(ctx: typer.Context) -> None:
 def cli_sub_callback(ctx: typer.Context) -> None:
 
     logger.debug(
-        "entry: ctx.parent.params = %s, ctx.params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
+        "entry",
+        ctx_parent_params=({} if ctx.parent is None else ctx.parent.params),
+        ctx_params=ctx.params,
     )
 
 
@@ -83,9 +73,9 @@ def cli_sub_leaf(
 ) -> None:
 
     logger.debug(
-        "entry: ctx.parent.params = %s, ctx.params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
+        "entry",
+        ctx_parent_params=({} if ctx.parent is None else ctx.parent.params),
+        ctx_params=ctx.params,
     )
 
 
@@ -94,7 +84,6 @@ def main() -> None:
     cli()
 
 
-# --
 def setup_logging(console: bool = False) -> None:
     shared_processors: List[Processor] = []
     structlog.configure(
@@ -155,8 +144,6 @@ def setup_logging(console: bool = False) -> None:
     root_logger.setLevel(os.environ.get("PYLOGGING_LEVEL", logging.INFO))
     root_logger.addHandler(log_handler)
 
-
-# --
 
 if __name__ == "__main__":
     main()

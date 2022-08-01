@@ -1,96 +1,70 @@
 #!/usr/bin/env python3
+import argparse
 import logging
 import os
 import sys
-from typing import List, Optional
-
-import typer
+from dataclasses import dataclass, field
+from typing import List
 
 from ._version import __version__
 
-# --
-
-# --
-
-# --
-
-
 logger = logging.getLogger(__name__)
 
-"""
-https://click.palletsprojects.com/en/7.x/api/#parameters
-https://click.palletsprojects.com/en/7.x/options/
-https://click.palletsprojects.com/en/7.x/arguments/
-https://typer.tiangolo.com/
-https://typer.tiangolo.com/tutorial/options/
-"""
 
+@dataclass
+class Application:
+    parser: argparse.ArgumentParser = field(
+        default_factory=lambda: argparse.ArgumentParser(add_help=True)
+    )
 
-cli = typer.Typer()
-cli_sub = typer.Typer()
-cli.add_typer(cli_sub, name="sub")
-
-
-@cli.callback()
-def cli_callback(
-    ctx: typer.Context, verbosity: int = typer.Option(0, "--verbose", "-v", count=True)
-) -> None:
-    if verbosity is not None:
-        root_logger = logging.getLogger("")
-        root_logger.propagate = True
-        new_level = (
-            root_logger.getEffectiveLevel()
-            - (min(1, verbosity)) * 10
-            - min(max(0, verbosity - 1), 9) * 1
+    def __post_init__(self) -> None:
+        parser = self.parser
+        parser.add_argument(
+            "-v",
+            "--verbose",
+            action="count",
+            dest="verbosity",
+            help="increase verbosity level",
         )
-        root_logger.setLevel(new_level)
-    logger.debug(
-        "entry: ctx.parent.params = %s, ctx.params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
-    )
-    logger.debug(
-        "logging.level = %s, LOGGER.level = %s",
-        logging.getLogger("").getEffectiveLevel(),
-        logger.getEffectiveLevel(),
-    )
+        parser.add_argument(
+            "--version", action="version", version=f"%(prog)s {__version__}"
+        )
+        parser.add_argument("target", nargs=1, type=str)
+        parser.set_defaults(handler=self.handle)
 
+    def run(self, args: List[str]) -> None:
+        parse_result = self.parser.parse_args(args)
 
-@cli.command("version")
-def cli_version(ctx: typer.Context) -> None:
-    sys.stderr.write(f"{__version__}\n")
+        verbosity = parse_result.verbosity
+        if verbosity is not None:
+            root_logger = logging.getLogger("")
+            root_logger.propagate = True
+            new_level = (
+                root_logger.getEffectiveLevel()
+                - (min(1, verbosity)) * 10
+                - min(max(0, verbosity - 1), 9) * 1
+            )
+            root_logger.setLevel(new_level)
 
+        logging.debug(
+            "sys.executable = %s, args = %s, parse_result = %s, logging.level = %s",
+            sys.executable,
+            args,
+            parse_result,
+            logging.getLogger("").getEffectiveLevel(),
+        )
 
-@cli_sub.callback()
-def cli_sub_callback(ctx: typer.Context) -> None:
+        parse_result.handler(parse_result)
 
-    logger.debug(
-        "entry: ctx.parent.params = %s, ctx.params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
-    )
-
-
-@cli_sub.command("leaf")
-def cli_sub_leaf(
-    ctx: typer.Context,
-    name: Optional[str] = typer.Option("fake", "--name", "-n", help="The name ..."),
-    numbers: Optional[List[int]] = typer.Argument(None),
-) -> None:
-
-    logger.debug(
-        "entry: ctx.parent.params = %s, ctx.params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
-    )
+    def handle(self, parse_result: argparse.Namespace) -> None:
+        logging.debug("entry ...")
 
 
 def main() -> None:
     setup_logging()
-    cli()
+    Application().run(sys.argv[1:])
 
 
-# --
 def setup_logging() -> None:
     logging.basicConfig(
         level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
@@ -102,8 +76,6 @@ def setup_logging() -> None:
         ),
     )
 
-
-# --
 
 if __name__ == "__main__":
     main()
