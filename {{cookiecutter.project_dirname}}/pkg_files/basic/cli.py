@@ -4,24 +4,11 @@ import os
 import sys
 from typing import List, Optional
 
-import typer
-
-from ._version import __version__
-
-# --{% if False %}
-BARRIER = 1
-# --{% endif %}
-
-# --{% if cookiecutter.use_structlog == "y" %}
 import structlog
+import typer
 from structlog.types import Processor
 
-# --{% endif %}
-
-# --{% if False %}
-BARRIER = 1
-# --{% endif %}
-
+from ._version import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +85,6 @@ def main() -> None:
     cli()
 
 
-# --{% if cookiecutter.use_structlog == "y" %}
 def setup_logging(console: bool = False) -> None:
     shared_processors: List[Processor] = []
     structlog.configure(
@@ -159,21 +145,6 @@ def setup_logging(console: bool = False) -> None:
     root_logger.setLevel(os.environ.get("PYLOGGING_LEVEL", logging.INFO))
     root_logger.addHandler(log_handler)
 
-
-# --{% else %}
-def setup_logging() -> None:
-    logging.basicConfig(
-        level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
-        stream=sys.stderr,
-        datefmt="%Y-%m-%dT%H:%M:%S",
-        format=(
-            "%(asctime)s.%(msecs)03d %(process)d %(thread)d %(levelno)03d:%(levelname)-8s "
-            "%(name)-12s %(module)s:%(lineno)s:%(funcName)s %(message)s"
-        ),
-    )
-
-
-# --{% endif %}
 
 if __name__ == "__main__":
     main()

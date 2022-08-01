@@ -1,5 +1,6 @@
 import logging
 
+
 from {{cookiecutter.python_package_fqname}} import package_function
 
 

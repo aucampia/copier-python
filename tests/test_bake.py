@@ -216,7 +216,7 @@ BAKER = Baker()
 
 
 def make_baked_cmd_cases() -> Generator[ParameterSet, None, None]:
-    config_names = {"minimal", "everything"}
+    config_names = {"minimal", "basic"}
     for config_name, (cmd_name, cmd) in itertools.product(
         config_names,
         [

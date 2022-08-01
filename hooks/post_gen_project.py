@@ -1,6 +1,7 @@
 # {% raw %}
 
 import distutils.dir_util
+import enum
 import json
 import logging
 import os
@@ -30,6 +31,10 @@ SCRIPT_PATH = Path(__file__)
 COOKIE_PATH = SCRIPT_PATH.parent.parent
 
 
+class Variants(enum.Enum):
+    BASIC = "basic"
+    MINIMAL = "minimal"
+
 def apply() -> None:
     logger.info("entry: ...")
     logger.debug("os.getcwd() = %s", os.getcwd())
@@ -39,8 +44,10 @@ def apply() -> None:
 
     cwd_path = Path.cwd()
 
-    pkg_files_path = cwd_path.joinpath("pkg_files")
     namespace_parts: List[str] = COOKIECUTTER["python_package_fqname"].split(".")
+    variant = Variants(COOKIECUTTER["variant"])
+    pkg_files_path = cwd_path.joinpath("pkg_files", variant.value)
+
     logger.debug("namespace_parts = %s", namespace_parts)
     namespace_path = cwd_path.joinpath("src", *namespace_parts)
     logger.debug("will make namespace_path.parent %s", namespace_path.parent)

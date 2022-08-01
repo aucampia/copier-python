@@ -327,19 +327,6 @@ flake8-polyfill = "*"
 pycodestyle = "*"
 
 [[package]]
-name = "flake8-black"
-version = "0.3.3"
-description = "flake8 plugin to call black as a code style validator"
-category = "dev"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-black = ">=22.1.0"
-flake8 = ">=3.0.0"
-tomli = "*"
-
-[[package]]
 name = "flake8-bugbear"
 version = "22.7.1"
 description = "A plugin for flake8 finding likely bugs and design problems in your program. Contains warnings that don't belong in pyflakes and pycodestyle."
@@ -1092,7 +1079,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "3a6f7b4892c6f0037134a384168a232071b10e899af0d4533788793018974a2b"
+content-hash = "3b2db457e2bbf2c3d1de6d753a141a27c8678a4196c65de5ff867829d419126e"
 
 [metadata.files]
 arrow = []
@@ -1142,7 +1129,6 @@ flake8 = [
     {file = "flake8-4.0.1.tar.gz", hash = "sha256:806e034dda44114815e23c16ef92f95c91e4c71100ff52813adf7132a6ad870d"},
 ]
 flake8-bandit = []
-flake8-black = []
 flake8-bugbear = []
 flake8-isort = []
 flake8-polyfill = []

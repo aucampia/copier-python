@@ -9,6 +9,6 @@
   "version": "0.0.0",
   "python_version": "3.7",
   "init_git": "y",
-  "use_structlog": "y",
+  "variant": ["basic", "minimal"],
   "use_poetry_dynamic_versioning": "y"
 }

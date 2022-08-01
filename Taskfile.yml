@@ -8,7 +8,7 @@ vars:
   POETRY: "{{.PYTHON}} -m poetry"
   RUN_PREFIX: "{{.POETRY}} run"
   RUN_PYTHON: "{{.RUN_PREFIX}} python"
-  PY_SOURCE: "hooks tests"
+  PY_SOURCE: "hooks tests link_project/pkg_files"
 
 tasks:
   configure:
@@ -78,6 +78,10 @@ tasks:
     desc: Run validate
     cmds:
       - task: validate
+  poetry:
+    desc: Run poetry
+    cmds:
+      - "{{.POETRY}} {{.CLI_ARGS}}"
   venv:run:
     desc: Run args in the venv
     cmds:
