@@ -35,6 +35,7 @@ class Variants(enum.Enum):
     BASIC = "basic"
     MINIMAL = "minimal"
 
+
 def apply() -> None:
     logger.info("entry: ...")
     logger.debug("os.getcwd() = %s", os.getcwd())
@@ -79,11 +80,10 @@ def apply() -> None:
             logger.info("Writing cookiecutter input to %s", cookiecutter_input_path)
             with open(cwd_path.joinpath("cookiecutter-input.yaml"), "w") as file_object:
                 data = {"default_context": COOKIECUTTER.copy()}
-                del data["default_context"]["_template"]
-                del data["default_context"]["_output_dir"]
-                # json.dump(data, file_object, indent=2, sort_keys=True)
+                for key in ("_template", "_output_dir"):
+                    if key in data["default_context"]:
+                        del data["default_context"][key]
                 yaml.safe_dump(data, file_object)
-                # file_object.write('\n')
         except ImportError:
             logger.warning(
                 "no yaml, %s will not be written - install pyyaml to fix",

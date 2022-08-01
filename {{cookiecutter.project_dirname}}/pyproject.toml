@@ -19,7 +19,7 @@ packages = [
 python = "^{{ cookiecutter.python_version }}"
 pydantic = ">=1"
 PyYAML = ">=6"
-# {% if cookiecutter.variant in ["basic", "everything"] -%}
+# {% if cookiecutter.variant in ["basic", "everything"] %}
 structlog = ">=21"
 typer = ">=0"
 # {% endif %}

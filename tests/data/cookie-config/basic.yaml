@@ -1,0 +1,3 @@
+default_context:
+  project_name: "example.project.minimal"
+  variant: basic

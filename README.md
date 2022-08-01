@@ -2,11 +2,16 @@
 
 
 ```bash
-cookiecutter -v gh:aucampia/cookiecutter-python --overwrite-if-exists -o var/baked/tmp
+cookiecutter -v gh:aucampia/cookiecutter-python --overwrite-if-exists --output-dir var/baked/tmp
+cruft create ~/sw/d/github.com/aucampia/cookiecutter-python
 
 
 \rm -rv var/baked/tmp
-cookiecutter -vvvv ./ --overwrite-if-exists --no-input --config-file test/data/cookie-config/basic.yaml -o var/baked/tmp
+rm -rf ~/.cookiecutters/cookiecutter-*
+
+cookiecutter -vvvv ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
+# WARNING: cruft works from HEAD
+cruft create ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
 ```
 
 
