@@ -58,7 +58,7 @@ def apply() -> None:
 
     namespace_parts: List[str] = COOKIECUTTER["python_package_fqname"].split(".")
     variant = Variants(COOKIECUTTER["variant"])
-    build_tool = BuildTool(COOKIECUTTER["build-tool"])
+    build_tool = BuildTool(COOKIECUTTER["build_tool"])
     pkg_files_path = cwd_path.joinpath("pkg_files", variant.value)
 
     logger.debug("namespace_parts = %s", namespace_parts)
