@@ -10,5 +10,6 @@
   "python_version": "3.7",
   "init_git": "y",
   "variant": ["basic", "minimal"],
+  "build_tool": ["gnu-make", "go-task"],
   "use_poetry_dynamic_versioning": "y"
 }

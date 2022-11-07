@@ -36,6 +36,17 @@ class Variants(enum.Enum):
     MINIMAL = "minimal"
 
 
+class BuildTool(enum.Enum):
+    GNU_MAKE = "gnu-make"
+    GO_TASK = "go-task"
+
+
+build_tool_files = {
+    BuildTool.GNU_MAKE: "Makefile",
+    BuildTool.GO_TASK: "Taskfile.yml",
+}
+
+
 def apply() -> None:
     logger.info("entry: ...")
     logger.debug("os.getcwd() = %s", os.getcwd())
@@ -47,6 +58,7 @@ def apply() -> None:
 
     namespace_parts: List[str] = COOKIECUTTER["python_package_fqname"].split(".")
     variant = Variants(COOKIECUTTER["variant"])
+    build_tool = BuildTool(COOKIECUTTER["build-tool"])
     pkg_files_path = cwd_path.joinpath("pkg_files", variant.value)
 
     logger.debug("namespace_parts = %s", namespace_parts)
@@ -91,6 +103,12 @@ def apply() -> None:
             )
     else:
         logger.info("Not writing %s as it already exists", cookiecutter_input_path)
+
+    remove_files = set(build_tool_files.values()) - {build_tool_files[build_tool]}
+    logger.info("removing unused build files %s", remove_files)
+    for remove_file in remove_files:
+        logger.info("removing unused build file %s", remove_file)
+        (cwd_path / remove_file).unlink()
 
     init_git = COOKIECUTTER.get("init_git", "n") == "y"
     if init_git:
