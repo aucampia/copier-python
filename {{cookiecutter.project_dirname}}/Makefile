@@ -39,7 +39,7 @@ generated_dir?=$(localstatedir)/generated
 
 
 .PHONY: configure
-configure: $(venv_dir) ## configure the project
+configure: ## configure the project
 
 .PHONY: validate
 validate: ## validate everything
@@ -67,6 +67,11 @@ clean: clean-var/
 
 py_source=./src ./tests
 poetry=python -m poetry
+
+.PHONY: python-configure
+configure: python-configure
+python-configure:
+	$(poetry) install
 
 .PHONY: python-validate-static
 validate-static: python-validate-static
