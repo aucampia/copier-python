@@ -15,7 +15,7 @@ make validate-fix validate
 {% endif %}
 ```
 
-## using docker devtools
+## Using docker devtools
 
 ```bash
 make -C devtools -B
