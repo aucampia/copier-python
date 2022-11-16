@@ -10,7 +10,7 @@ authors = []
 python = "^3.10"
 PyYAML = ">=6"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = ">=22"
 codespell = ">=2,<2.2"
 flake8 = ">=4"

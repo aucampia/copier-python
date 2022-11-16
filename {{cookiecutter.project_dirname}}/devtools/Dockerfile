@@ -36,6 +36,8 @@ RUN \
         git \
         rsync \
         libarchive-tools \
+        jq \
+        yq \
         && \
     rm -vr /var/lib/apt/lists/* && \
     true
