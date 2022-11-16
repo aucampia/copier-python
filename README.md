@@ -36,3 +36,24 @@ PYLOGGING_LEVEL=DEBUG cruft create ./ --overwrite-if-exists --no-input --config-
 docker compose build
 docker compose run --rm python-devtools task help
 ```
+
+
+## monkey sync
+
+```bash
+## Diff summary ...
+diff -u -r -q \
+    --exclude={.git,TEMPLATE-*.md,poetry.lock,__pycache__,*.egg-info,.pytest_cache,.mypy_cache,.venv,.tox,setup.py,.cache-*,dist,.coverage,coverage.xml,extra,LICENSE} \
+    ~/sw/d/github.com/aucampia/cookiecutter-python/var/baked/tmp/example.project.basic/ ./
+
+## vimdiff
+diff -u -r \
+    --exclude={.git,TEMPLATE-*.md,poetry.lock,__pycache__,*.egg-info,.pytest_cache,.mypy_cache,.venv,.tox,setup.py,.cache-*,dist,.coverage,coverage.xml,extra,LICENSE} \
+    ~/sw/d/github.com/aucampia/cookiecutter-python/var/baked/tmp/example.project.basic/ ./ \
+    | sed -E -n 's,^diff.* /,vimdiff /,gp'
+
+## diff
+diff -u -r \
+    --exclude={.git,TEMPLATE-*.md,poetry.lock,__pycache__,*.egg-info,.pytest_cache,.mypy_cache,.venv,.tox,setup.py,.cache-*,dist,.coverage,coverage.xml,extra,LICENSE} \
+    ~/sw/d/github.com/aucampia/cookiecutter-python/var/baked/tmp/example.project.basic/ ./
+```

@@ -110,6 +110,9 @@ def apply() -> None:
         logger.info("removing unused build file %s", remove_file)
         (cwd_path / remove_file).unlink()
 
+    # too slow, let users run this ...
+    # subprocess.run(["make", "-C", "devtools", "-B"])
+
     init_git = COOKIECUTTER.get("init_git", "n") == "y"
     if init_git:
         subprocess.run(["git", "init"])
