@@ -3,3 +3,4 @@ default_context:
   init_git: "n"
   use_poetry_dynamic_versioning: "n"
   variant: minimal
+  build_tool: go-task

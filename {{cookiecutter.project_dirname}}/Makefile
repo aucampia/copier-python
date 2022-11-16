@@ -75,25 +75,25 @@ python-configure:
 .PHONY: python-validate-static
 validate-static: python-validate-static
 python-validate-static:
-	$(poetry) run mypy --show-error-codes --show-error-context
-	$(poetry) run codespell $(py_source) *.md
-	$(poetry) run isort --check --diff $(py_source)
-	$(poetry) run black --check --diff $(py_source)
-	$(poetry) run flake8 $(py_source)
+	$(poetry) run mypy --show-error-codes --show-error-context $(CLI_ARGS)
+	$(poetry) run codespell $(or $(CLI_ARGS),$(py_source) *.md)
+	$(poetry) run isort --check --diff $(or $(CLI_ARGS),$(py_source))
+	$(poetry) run black --check --diff $(or $(CLI_ARGS),$(py_source))
+	$(poetry) run flake8 $(or $(CLI_ARGS),$(py_source))
 	$(poetry) export --without-hashes --dev --format requirements.txt | $(poetry) run safety check --full-report --stdin
 
 .PHONY: python-validate-fix
 validate-fix: python-validate-fix
 python-validate-fix:
-	$(poetry) run pycln --config=pyproject.toml $(py_source)
-	$(poetry) run isort $(py_source)
-	$(poetry) run black $(py_source)
+	$(poetry) run pycln --config=pyproject.toml $(or $(CLI_ARGS),$(py_source))
+	$(poetry) run isort $(or $(CLI_ARGS),$(py_source))
+	$(poetry) run black $(or $(CLI_ARGS),$(py_source))
 
 .PHONY: python-test
 test: python-test
 pytest_args=--cov-report term --cov-report xml
 python-test:
-	$(poetry) run pytest $(pytest_args)
+	$(poetry) run pytest $(pytest_args) $(CLI_ARGS)
 
 .PHONY: python-validate
 validate: python-validate

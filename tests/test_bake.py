@@ -144,10 +144,15 @@ class Baker:
             return self._baked[key]
 
         output_path = Path(tempfile.gettempdir()) / f"baked-cookie-{key_hash}"
+        logging.info("output_path = %s", output_path)
         output_context_path = output_path.parent / f"{output_path.name}-context.json"
         output_project_path = output_path.parent / f"{output_path.name}-project.json"
 
-        if output_path.exists() and not TEST_RAPID:
+        if (
+            output_path.exists()
+            and (next(output_path.glob("*"), None) is not None)
+            and not TEST_RAPID
+        ):
 
             output_context = json.loads(output_context_path.read_text())
             output_project = json.loads(output_project_path.read_text())

@@ -29,8 +29,15 @@ class Application:
         parser.add_argument(
             "--version", action="version", version=f"%(prog)s {__version__}"
         )
-        parser.add_argument("target", nargs=1, type=str)
         parser.set_defaults(handler=self.handle)
+        current_parser = parser
+        current_subparsers = current_parser.add_subparsers()
+        current_parser = current_subparsers.add_parser("sub")
+        current_subparsers = current_parser.add_subparsers()
+        current_parser = current_subparsers.add_parser("leaf")
+        current_parser.set_defaults(handler=self.cli_sub_leaf)
+        current_parser.add_argument("target", nargs='*', type=str)
+
 
     def run(self, args: List[str]) -> None:
         parse_result = self.parser.parse_args(args)
@@ -57,6 +64,9 @@ class Application:
         parse_result.handler(parse_result)
 
     def handle(self, parse_result: argparse.Namespace) -> None:
+        logging.debug("entry ...")
+
+    def cli_sub_leaf(self, parse_result: argparse.Namespace) -> None:
         logging.debug("entry ...")
 
 
