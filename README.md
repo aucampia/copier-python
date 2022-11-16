@@ -18,7 +18,6 @@ PYLOGGING_LEVEL=DEBUG cruft create ./ --overwrite-if-exists --no-input --config-
 (cd var/baked/tmp/example.project.basic && task validate:fix validate)
 ```
 
-
 ## Inspiration
 
 - https://github.com/hackebrot/cookiecutter-examples/tree/master/create-directories
@@ -30,3 +29,10 @@ PYLOGGING_LEVEL=DEBUG cruft create ./ --overwrite-if-exists --no-input --config-
   - https://github.com/johanvergeer/cookiecutter-poetry/blob/develop/cookiecutter.json
 - https://github.com/cjolowicz/cookiecutter-hypermodern-python
   -  https://github.com/cjolowicz/cookiecutter-hypermodern-python/blob/main/cookiecutter.json
+
+## devtools
+
+```bash
+docker compose build
+docker compose run --rm python-devtools task help
+```
