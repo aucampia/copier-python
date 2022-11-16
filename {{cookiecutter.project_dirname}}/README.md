@@ -31,3 +31,9 @@ docker compose run --rm python-devtools make validate-fix validate
 {{ None["[ERROR] Invalid build_tool " ~ cookiecutter.build_tool][0] }}
 {% endif %}
 ```
+
+## Updating from template base
+
+```bash
+pipx run --spec=cruft cruft update
+```
