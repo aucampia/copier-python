@@ -10,7 +10,7 @@ authors = []
 python = "^3.10"
 PyYAML = ">=6"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = ">=22"
 codespell = ">=2,<2.2"
 flake8 = ">=4"
@@ -83,6 +83,6 @@ ignore_missing_imports = true
 paths = ["hooks", "tests", "link_project/pkg_files"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.2.0"]
 build-backend = "poetry.core.masonry.api"
 

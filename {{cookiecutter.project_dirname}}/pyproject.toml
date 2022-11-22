@@ -24,7 +24,7 @@ structlog = ">=21"
 typer = ">=0"
 # {% endif %}
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = ">=22"
 codespell = ">=2,<2.2"
 flake8 = ">=4"
@@ -92,8 +92,8 @@ files=["src/**/_version.py"]
 
 [build-system]
 # {% if cookiecutter.use_poetry_dynamic_versioning == "y" %}
-requires = ["setuptools","poetry-core>=1.0.0","poetry-dynamic-versioning"]
+requires = ["setuptools","poetry-core>=1.2.0","poetry-dynamic-versioning"]
 # {% else %}
-requires = ["setuptools","poetry-core>=1.0.0"]
+requires = ["setuptools","poetry-core>=1.2.0"]
 # {% endif %}
 build-backend = "poetry.core.masonry.api"

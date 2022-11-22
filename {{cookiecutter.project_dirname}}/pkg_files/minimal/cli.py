@@ -36,8 +36,7 @@ class Application:
         current_subparsers = current_parser.add_subparsers()
         current_parser = current_subparsers.add_parser("leaf")
         current_parser.set_defaults(handler=self.cli_sub_leaf)
-        current_parser.add_argument("target", nargs='*', type=str)
-
+        current_parser.add_argument("target", nargs="*", type=str)
 
     def run(self, args: List[str]) -> None:
         parse_result = self.parser.parse_args(args)
