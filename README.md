@@ -11,6 +11,8 @@ cruft create ~/sw/d/github.com/aucampia/cookiecutter-python
 \rm -rv var/baked/tmp
 
 cookiecutter -vvvv ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
+cookiecutter -vvvv ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic-make.yaml --output-dir var/baked/tmp
+
 # WARNING: cruft works from HEAD so commit first
 PYLOGGING_LEVEL=DEBUG cruft create ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
 
