@@ -80,7 +80,9 @@ python-validate-static:
 	$(poetry) run isort --check --diff $(or $(CLI_ARGS),$(py_source))
 	$(poetry) run black --check --diff $(or $(CLI_ARGS),$(py_source))
 	$(poetry) run flake8 $(or $(CLI_ARGS),$(py_source))
-	$(poetry) export --without-hashes --with dev --format requirements.txt | $(poetry) run safety check --full-report --stdin
+	$(poetry) export --without-hashes --with dev --format requirements.txt \
+		| $(poetry) run pip-audit --requirement /dev/stdin --no-deps --strict --desc on \
+        	--ignore-vuln GHSA-2p9h-ccw7-33gf
 
 .PHONY: python-validate-fix
 validate-fix: python-validate-fix
