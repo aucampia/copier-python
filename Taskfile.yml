@@ -42,7 +42,7 @@ tasks:
   safety-check:
     desc: Run safety check
     cmds:
-      - "{{.POETRY}} export --without-hashes --dev --format requirements.txt | {{.RUN_PYTHON}} -m safety check --full-report --stdin"
+      - "{{.POETRY}} export --without-hashes --with dev --format requirements.txt | {{.RUN_PYTHON}} -m safety check --full-report --stdin"
   test:
     desc: Run tests
     cmds:

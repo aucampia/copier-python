@@ -80,7 +80,7 @@ python-validate-static:
 	$(poetry) run isort --check --diff $(or $(CLI_ARGS),$(py_source))
 	$(poetry) run black --check --diff $(or $(CLI_ARGS),$(py_source))
 	$(poetry) run flake8 $(or $(CLI_ARGS),$(py_source))
-	$(poetry) export --without-hashes --dev --format requirements.txt | $(poetry) run safety check --full-report --stdin
+	$(poetry) export --without-hashes --with dev --format requirements.txt | $(poetry) run safety check --full-report --stdin
 
 .PHONY: python-validate-fix
 validate-fix: python-validate-fix
