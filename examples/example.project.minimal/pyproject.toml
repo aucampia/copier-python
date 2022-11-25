@@ -50,9 +50,6 @@ show_missing = true
 profile = "black"
 src_paths = ["src", "tests"]
 
-[tool.codespell]
-ignore-words = ".codespellignore"
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = ["--cov-config=pyproject.toml", "--cov=src"]
