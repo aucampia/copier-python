@@ -2,7 +2,7 @@
 
 ```bash
 poetry install
-poetry run example.project.minimal-cli
+poetry run example.project.basic-cli
 
 
 task help

@@ -21,9 +21,9 @@ pydantic = ">=1"
 PyYAML = ">=6"
 # 
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = ">=22"
-codespell = ">=2"
+codespell = ">=2,<2.2"
 flake8 = ">=4"
 flake8-black = ">=0"
 flake8-bugbear = ">=22"
@@ -39,6 +39,7 @@ safety = ">=1"
 types-click = ">=7"
 types-PyYAML = ">=6"
 typing-extensions = ">=4"
+pip-audit = ">=2"
 
 [tool.coverage.report]
 # https://coverage.readthedocs.io/en/coverage-5.0/config.html
@@ -48,6 +49,9 @@ show_missing = true
 # https://pycqa.github.io/isort/docs/configuration/config_files.html
 profile = "black"
 src_paths = ["src", "tests"]
+
+[tool.codespell]
+ignore-words = ".codespellignore"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

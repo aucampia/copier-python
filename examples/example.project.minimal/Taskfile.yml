@@ -6,7 +6,7 @@ version: "3"
 
 vars:
   PYTHON: python
-  POETRY: "{{.PYTHON}} -m poetry"
+  POETRY: "poetry"
   RUN_PREFIX: "{{.POETRY}} run"
   RUN_PYTHON: "{{.RUN_PREFIX}} python"
   PY_SOURCE: "src tests"
@@ -40,10 +40,13 @@ tasks:
     desc: Run codespell
     cmds:
       - "{{.RUN_PREFIX}} codespell {{.CLI_ARGS | default .PY_SOURCE}}"
-  safety-check:
-    desc: Run safety check
+  pip-audit:
+    desc: Run pip audit
     cmds:
-      - "{{.POETRY}} export --without-hashes --dev --format requirements.txt | {{.RUN_PYTHON}} -m safety check --full-report --stdin"
+      - |
+        {{.POETRY}} export --without-hashes --with dev --format requirements.txt | \
+          {{.RUN_PYTHON}} -m pip_audit --requirement /dev/stdin --no-deps --strict --desc on \
+            --ignore-vuln GHSA-2p9h-ccw7-33gf
   test:
     desc: Run tests
     cmds:
@@ -58,7 +61,7 @@ tasks:
       - task: black
         vars: { CHECK: true }
       - task: flake8
-      - task: safety-check
+      - task: pip-audit
   validate:fix:
     desc: Fix auto-fixable validation errors.
     cmds:

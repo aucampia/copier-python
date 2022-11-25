@@ -1,4 +1,5 @@
 default_context:
+  build_tool: go-task
   cli_name: example.project.minimal-cli
   init_git: n
   project_dirname: example.project.minimal
