@@ -46,11 +46,13 @@ variant:
   choices:
     basic: basic
     minimal: minimal
+  default: basic
 build_tool:
   type: str
   choices:
     gnu-make: gnu-make
     go-task: go-task
+  default: go-task
 use_poetry_dynamic_versioning:
   type: bool
   default: false
