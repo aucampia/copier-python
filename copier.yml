@@ -3,7 +3,7 @@
 _subdirectory: template
 _templates_suffix: ""
 _tasks:
-  - "python task_post_generation.py"
+  - "python .copier/task_post_generation.py"
 project_name:
   type: str
   help: Your project's name
