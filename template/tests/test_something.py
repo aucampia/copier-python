@@ -9,3 +9,4 @@ def test_something() -> None:
     assert package_function() == "value"
 
 
+# ...
