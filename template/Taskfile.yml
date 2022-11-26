@@ -85,7 +85,7 @@ tasks:
   cli:
     desc: Run cli
     cmds:
-      - '{{.RUN_PREFIX}} {% endraw %}{{ cookiecutter.cli_name }}{% raw %} {{.CLI_ARGS}}'
+      - '{{.RUN_PREFIX}} {% endraw %}{{ cli_name }}{% raw %} {{.CLI_ARGS}}'
   venv:run:
     desc: Run args in the venv
     cmds:

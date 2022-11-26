@@ -1,3 +1,0 @@
-default_context:
-  init_git: "n"
-  build_tool: go-task

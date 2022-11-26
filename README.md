@@ -3,7 +3,7 @@
 ```bash
 \rm -rv var/baked/tmp
 
-copier copy --vcs-ref HEAD ./ var/copied/tmp
+copier --vcs-ref HEAD --defaults copy ./ var/copied/tmp
 ```
 
 ```bash

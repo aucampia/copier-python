@@ -1,25 +1,25 @@
 # https://python-poetry.org/docs/pyproject/
 # https://www.python.org/dev/peps/pep-0621/
 [tool.poetry]
-name = "{{ cookiecutter.project_name }}"
-version = "{{ cookiecutter.version }}"
+name = "{{ project_name }}"
+version = "{{ version }}"
 description = ""
 authors = []
-license = "{{ cookiecutter.sdpx_license_identifier }}"
+license = "{{ sdpx_license_identifier }}"
 readme = "README.md"
 packages = [
     {include = "*", from = "src"},
 ]
 
 [tool.poetry.scripts]
-"{{ cookiecutter.cli_name }}" = "{{ cookiecutter.python_package_fqname }}.cli:main"
+"{{ cli_name }}" = "{{ python_package_fqname }}.cli:main"
 
 
 [tool.poetry.dependencies]
-python = "^{{ cookiecutter.python_version }}"
+python = "^{{ python_version }}"
 pydantic = ">=1"
 PyYAML = ">=6"
-# {% if cookiecutter.variant in ["basic", "everything"] %}
+# {% if variant in ["basic", "everything"] %}
 structlog = ">=21"
 typer = ">=0"
 # {% endif %}
@@ -67,14 +67,14 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 # https://mypy.readthedocs.io/en/stable/config_file.html
 files = "src,tests"
 mypy_path = "src"
-python_version = "{{ cookiecutter.python_version }}"
+python_version = "{{ python_version }}"
 strict = true
 warn_unreachable = true
 warn_unused_configs = true
 explicit_package_bases = true
 namespace_packages = true
 
-# {% if cookiecutter.use_poetry_dynamic_versioning == "y" %}
+# {% if use_poetry_dynamic_versioning == "y" %}
 # {% raw %}
 [tool.poetry-dynamic-versioning]
 enable = true
@@ -92,7 +92,7 @@ files=["src/**/_version.py"]
 # {% endif %}
 
 [build-system]
-# {% if cookiecutter.use_poetry_dynamic_versioning == "y" %}
+# {% if use_poetry_dynamic_versioning == "y" %}
 requires = ["setuptools","poetry-core>=1.0.0","poetry-dynamic-versioning"]
 # {% else %}
 requires = ["setuptools","poetry-core>=1.0.0"]

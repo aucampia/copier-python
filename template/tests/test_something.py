@@ -1,7 +1,7 @@
 import logging
 
 
-from {{cookiecutter.python_package_fqname}} import package_function
+from {{python_package_fqname}} import package_function
 
 
 def test_something() -> None:

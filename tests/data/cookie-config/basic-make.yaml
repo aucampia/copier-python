@@ -1,5 +1,0 @@
-default_context:
-  project_name: "example.project.basic_make"
-  init_git: "n"
-  variant: basic
-  build_tool: gnu-make
