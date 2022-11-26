@@ -4,7 +4,7 @@ _subdirectory: template
 _templates_suffix: ""
 _tasks:
   - pwd
-  - "python scripts/task_post_generation.py"
+  - "python _scripts/task_post_generation.py"
 project_name:
   type: str
   help: Your project's name
