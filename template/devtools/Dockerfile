@@ -19,7 +19,7 @@ FROM docker.io/mikefarah/yq:4 as yq
 
 # ... {% if False %}
 FROM docker.io/library/python:3.10 AS python
-# {% else %}{{"\n"}}FROM docker.io/library/python:{{ cookiecutter.python_version }} AS python{% endif %}
+# {% else %}{{"\n"}}FROM docker.io/library/python:{{ python_version }} AS python{% endif %}
 
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

@@ -2,7 +2,7 @@
 all:
 .PHONY: all
 
-python_version?={{cookiecutter.python_version}}
+python_version?={{python_version}}
 pip_compile=pipx run --spec=pip-tools --python=python$(python_version) pip-compile
 
 requirement%.txt: requirement%.in

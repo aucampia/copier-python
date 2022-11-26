@@ -19,7 +19,7 @@ project_url:
   default: "https://example.com/project"
 # project_dirname:
 #   type: str
-#   help: "{{ cookiecutter.project_name.lower().replace(' ', '_') }}"
+#   help: "{{ project_name.lower().replace(' ', '_') }}"
 project_short_description:
   type: str
   help: A short description of your project
@@ -28,7 +28,7 @@ project_short_description:
 cli_name:
   type: str
   default: |
-    cookiecutter.python_package_fqname + '-cli'
+    {{ python_package_fqname + '-cli' }}
 sdpx_license_identifier:
   type: str
   default: UNLICENSED
