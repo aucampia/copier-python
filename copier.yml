@@ -3,6 +3,7 @@
 _subdirectory: template
 _templates_suffix: ""
 _tasks:
+  - pwd
   - "python .copier/task_post_generation.py"
 project_name:
   type: str
