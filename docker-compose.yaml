@@ -1,1 +1,1 @@
-{{cookiecutter.project_dirname}}/docker-compose.yaml
+template/docker-compose.yaml

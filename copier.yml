@@ -1,0 +1,56 @@
+# https://copier.readthedocs.io/en/stable/configuring/
+# https://copier.readthedocs.io/en/stable/configuring/#available-settings
+_subdirectory: template
+_templates_suffix: ""
+_tasks:
+  - "python task_post_generation.py"
+project_name:
+  type: str
+  help: Your project's name
+  default: example.project
+python_package_fqname:
+  type: str
+  help: Your project fully qualified package name
+  default: |
+    {{ project_name.lower().replace(' ', '_').replace('-', '_') }}
+project_url:
+  type: str
+  help: Your project's URL
+  default: "https://example.com/project"
+# project_dirname:
+#   type: str
+#   help: "{{ cookiecutter.project_name.lower().replace(' ', '_') }}"
+project_short_description:
+  type: str
+  help: A short description of your project
+  default: |
+    {{ project_name }}
+cli_name:
+  type: str
+  default: |
+    cookiecutter.python_package_fqname + '-cli'
+sdpx_license_identifier:
+  type: str
+  default: UNLICENSED
+version:
+  type: str
+  default: "0.0.0"
+python_version:
+  type: str
+  default: "3.7"
+init_git:
+  type: bool
+  default: true
+variant:
+  type: str
+  choices:
+    basic: basic
+    minimal: minimal
+build_tool:
+  type: str
+  choices:
+    gnu-make: gnu-make
+    go-task: go-task
+use_poetry_dynamic_versioning:
+  type: bool
+  default: false

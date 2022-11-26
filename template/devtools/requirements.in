@@ -1,3 +1,4 @@
 pip-tools==6.*
 poetry==1.*
 poetryup==0.*
+copier==7.*

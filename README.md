@@ -1,5 +1,10 @@
 # ...
 
+```bash
+\rm -rv var/baked/tmp
+
+copier copy --vcs-ref HEAD ./ var/copied/tmp
+```
 
 ```bash
 cookiecutter -v gh:aucampia/cookiecutter-python --overwrite-if-exists --output-dir var/baked/tmp
