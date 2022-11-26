@@ -22,13 +22,11 @@ SCRIPT_PATH = Path(__file__)
 
 # {% endraw %}
 COPIER_ANSWERS_JSON = """{{ _copier_answers | tojson('  ') }}"""
-COPIER_CONF_JSON = """{{ _copier_conf | tojson('  ') }}"""
+COPIER_CONF = """{{ _copier_conf }}"""
 
 # {% raw %}
 COPIER_ANSWERS = json.loads(COPIER_ANSWERS_JSON)
 assert isinstance(COPIER_ANSWERS, dict)
-COPIER_CONF = json.loads(COPIER_CONF_JSON)
-assert isinstance(COPIER_CONF, dict)
 
 
 SCRIPT_PATH = Path(__file__)
@@ -57,7 +55,7 @@ def apply() -> None:
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
     logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
-    logger.debug("COPIER_CONF_JSON = %s", COPIER_CONF_JSON)
+    logger.debug("COPIER_CONF_JSON = %s", COPIER_CONF)
 
     # cwd_path = Path.cwd()
 
