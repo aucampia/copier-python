@@ -1,0 +1,2 @@
+init_git: False
+build_tool: go-task

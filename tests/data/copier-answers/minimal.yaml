@@ -1,5 +1,5 @@
 project_name: "example.project.minimal"
-init_git: "n"
-use_poetry_dynamic_versioning: "n"
+init_git: False
+use_poetry_dynamic_versioning: False
 variant: minimal
 build_tool: go-task

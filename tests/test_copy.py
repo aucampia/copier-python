@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import pickle
+from shutil import rmtree
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -13,9 +14,7 @@ from typing import Any, Callable, Dict, Generator, Mapping, Set, TypeVar
 import pytest
 import yaml
 from _pytest.mark.structures import ParameterSet
-from cookiecutter.generate import generate_context
-from cookiecutter.main import cookiecutter
-from cookiecutter.prompt import prompt_for_config
+from copier import run_copy
 from frozendict import frozendict
 
 SCRIPT_PATH = Path(__file__)
@@ -23,9 +22,9 @@ PROJECT_PATH = SCRIPT_PATH.parent.parent
 TEST_DATA_PATH = SCRIPT_PATH.parent / "data"
 
 
-def load_test_config(name: str) -> Dict[str, Any]:
+def load_answers(name: str) -> Dict[str, Any]:
     config = yaml.safe_load(
-        (TEST_DATA_PATH / "cookie-config" / f"{name}.yaml").read_text()
+        (TEST_DATA_PATH / "copier-answers" / f"{name}.yaml").read_text()
     )
     # default_context = config["default_context"]
     assert isinstance(config, dict)
@@ -50,16 +49,16 @@ def escape_venv(environ: Mapping[str, str]) -> Dict[str, str]:
 
 
 @dataclass(frozen=True)
-class BakeKey:
+class CopyKey:
     template_path: Path
     template_hash: str
-    extra_context: frozendict[str, Any]
+    data: frozendict[str, Any]
 
 
 @dataclass(frozen=True)
-class BakeResult(BakeKey):
-    project_path: Path
-    context: Dict[str, Any]
+class CopyResult(CopyKey):
+    output_path: Path
+    answers: Dict[str, Any]
 
 
 AnyT = TypeVar("AnyT")
@@ -110,15 +109,12 @@ def hash_object(
 ESCAPED_ENV = escape_venv(os.environ)
 
 
-class Baker:
+class Copier:
     def __init__(self) -> None:
-        # self._counter = 0
-        # self._tmp_path = Path(mkdtemp(prefix=f"Baker-{__name__}-"))
-        self._baked: Dict[BakeKey, BakeResult] = {}
 
-    def bake(self, extra_context: Dict[str, Any], template_path: Path) -> BakeResult:
-        context_file = template_path / "cookiecutter.json"
+        self._copied: Dict[CopyKey, CopyResult] = {}
 
+    def copy(self, template_path: Path, data: Dict[str, Any]) -> CopyResult:
         if TEST_RAPID:
             template_path_hash = hash_object(template_path)
         else:
@@ -134,71 +130,81 @@ class Baker:
                 },
             )
 
-        key = BakeKey(template_path, template_path_hash, frozendict(extra_context))
+        key = CopyKey(template_path, template_path_hash, frozendict(data))
 
         key_hash = hash_object(key)
 
         # dirkey = "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
-        if key in self._baked:
-            return self._baked[key]
+        if key in self._copied:
+            return self._copied[key]
 
-        output_path = Path(tempfile.gettempdir()) / f"baked-cookie-{key_hash}"
-        logging.info("output_path = %s", output_path)
-        output_context_path = output_path.parent / f"{output_path.name}-context.json"
-        output_project_path = output_path.parent / f"{output_path.name}-project.json"
+        output_path = Path(tempfile.gettempdir()) / f"copied-{key_hash}" / "project"
+        output_answers_path = output_path.parent / f"{output_path.name}-answers.json"
+        logging.info(
+            "output_path = %s, output_answers_path = %s",
+            output_path,
+            output_answers_path,
+        )
+
+        # output_project_path = output_path.parent / f"{output_path.name}-project.json"
 
         if (
             output_path.exists()
             and (next(output_path.glob("*"), None) is not None)
-            and not TEST_RAPID
+            and TEST_RAPID
         ):
 
-            output_context = json.loads(output_context_path.read_text())
-            output_project = json.loads(output_project_path.read_text())
-            baked = BakeResult(
+            answers = json.loads(output_answers_path.read_text())
+            # output_project = json.loads(output_project_path.read_text())
+            copied = CopyResult(
                 template_path,
                 template_path_hash,
-                frozendict(extra_context),
-                Path(output_project),
-                output_context,
+                frozendict(data),
+                output_path,
+                answers,
             )
-            return baked
+            return copied
 
-        output_path.mkdir(exist_ok=True, parents=True)
+        output_path.parent.mkdir(exist_ok=True, parents=True)
 
-        # Render the context, so that we can store it on the Result
-        context: Dict[str, Any] = prompt_for_config(
-            generate_context(
-                context_file=str(context_file), extra_context=extra_context
+        rmtree(
+            output_path,
+            ignore_errors=True,
+            onerror=lambda function, path, excinfo: logging.info(
+                "rmtree error: function = %s, path = %s, excinfo = %s",
+                function,
+                path,
+                excinfo,
             ),
-            no_input=True,
         )
 
-        # Run cookiecutter to generate a new project
-        project_dir = cookiecutter(
-            str(template_path),
-            no_input=True,
-            extra_context=extra_context,
-            output_dir=str(output_path),
-            # config_file=str(self._config_file),
-            overwrite_if_exists=True if TEST_RAPID else False,
+        copy_result = run_copy(
+            f"{template_path}",
+            f"{output_path}",
+            data=data,
+            defaults=True,
+            vcs_ref="HEAD",
         )
-        project_path = Path(project_dir)
 
-        output_context_path.write_text(json.dumps(context))
-        output_project_path.write_text(json.dumps(str(project_path)))
+        answers_file = output_path / ".copier-answers.yml"
+        with answers_file.open("r") as _io:
+            answers = yaml.safe_load(_io)
+        # project_path = Path(project_dir)
 
-        baked = BakeResult(
+        output_answers_path.write_text(json.dumps(answers))
+        # output_project_path.write_text(json.dumps(str(project_path)))
+
+        copied = CopyResult(
             template_path,
             template_path_hash,
-            frozendict(extra_context),
-            project_path,
-            context,
+            frozendict(data),
+            output_path,
+            answers,
         )
 
         subprocess.run(
-            cwd=baked.project_path,
+            cwd=copied.output_path,
             env=ESCAPED_ENV,
             check=True,
             args=[
@@ -214,14 +220,17 @@ class Baker:
             ],
         )
 
-        return baked
+        return copied
 
 
-BAKER = Baker()
+COPIER = Copier()
 
 
-def make_baked_cmd_cases() -> Generator[ParameterSet, None, None]:
+def make_copied_cmd_cases() -> Generator[ParameterSet, None, None]:
     config_names = {"minimal", "basic"}
+    # config_names = {
+    #     "minimal",
+    # }
     for config_name, (cmd_name, cmd) in itertools.product(
         config_names,
         [
@@ -231,24 +240,47 @@ def make_baked_cmd_cases() -> Generator[ParameterSet, None, None]:
             ),
             (
                 "cli",
-                lambda result: f'task venv:run -- {result.context["cli_name"]} -vvvv sub leaf',
+                lambda result: f'task venv:run -- {result.answers["cli_name"]} -vvvv sub leaf',
             ),
         ],
     ):
-        extra_context = load_test_config(config_name)["default_context"]
+        data = load_answers(config_name)
         if config_name == "everything":
-            extra_context["init_git"] = "y"
-        yield pytest.param(extra_context, cmd, id=f"{config_name}-{cmd_name}")
+            data["init_git"] = "y"
+        yield pytest.param(data, cmd, id=f"{config_name}-{cmd_name}")
 
 
-@pytest.mark.parametrize(["extra_context", "cmd"], make_baked_cmd_cases())
-def test_baked_cmd(
-    extra_context: Dict[str, Any], cmd: Callable[[BakeResult], str]
+@pytest.mark.parametrize(["data", "cmd"], make_copied_cmd_cases())
+def test_copied_cmd(
+    data: Dict[str, Any],
+    cmd: Callable[[CopyResult], str],
+    tmp_path: Path,
 ) -> None:
-    result = BAKER.bake(extra_context, template_path=PROJECT_PATH)
-    logging.info("result = %s", result)
+    result = COPIER.copy(template_path=PROJECT_PATH, data=data)
+    # result = run_copy(f"{PROJECT_PATH}", f"{tmp_path}", data=data, defaults=True, vcs_ref="HEAD")
+    # output_path = tmp_path
+    output_path = result.output_path
+    logging.info("result = %s, output_path = %s", result, output_path)
+
+    # subprocess.run(
+    #     cwd=output_path,
+    #     env=ESCAPED_ENV,
+    #     check=True,
+    #     args=[
+    #         "bash",
+    #         "-c",
+    #         """
+    #     set -x
+    #     set -eo pipefail
+    #     # env | sort
+    #     task configure
+    #     task validate:fix
+    # """,
+    #     ],
+    # )
+
     subprocess.run(
-        cwd=result.project_path,
+        cwd=output_path,
         env=ESCAPED_ENV,
         check=True,
         args=[
