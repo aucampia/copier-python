@@ -54,6 +54,7 @@ def apply() -> None:
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
     logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
+    logger.debug("files = %s", "\n".join(f"{path}" for path in Path.cwd().glob("**/*")))
 
     # cwd_path = Path.cwd()
 
