@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import dataclasses
-
 # {% raw %}
 import distutils.dir_util
 import enum
@@ -39,7 +37,7 @@ SCRIPT_PATH = Path(__file__)
 TEMPLATE_PATH = SCRIPT_PATH.parent.parent
 
 
-class Variants(enum.Enum):
+class Variant(enum.Enum):
     BASIC = "basic"
     MINIMAL = "minimal"
 
@@ -69,26 +67,25 @@ build_tool_files = {
 @dataclass
 class CopierAnswers:
     python_package_fqname: str
-    variant_str: str
-    build_tool_str: str
+    variant: Variant
+    build_tool: BuildTool
     git_init: bool
     git_commit: bool
 
     def __post_init__(self) -> None:
-        self.variant = Variants(self.variant_str)
-        self.build_tool = BuildTool(self.build_tool_str)
+        # self.variant = Variants(self.variant)
+        # self.build_tool = BuildTool(self.build_tool)
         self.namespace_parts = self.python_package_fqname.split(".")
 
     @classmethod
     def from_mapping(cls, values: Mapping[str, Any]) -> CopierAnswers:
-
-        field_names = set(f.name for f in dataclasses.fields(cls))
-        logging.info("field_names = %s", field_names)
-        filtered = dict(
-            (key, value) for key, value in values.items() if key in field_names
+        return cls(
+            python_package_fqname=values["python_package_fqname"],
+            variant=Variant(values["variant"]),
+            build_tool=BuildTool(values["build_tool"]),
+            git_init=values["git_init"],
+            git_commit=values["git_commit"],
         )
-        logging.info("filtered = %s", filtered)
-        return cls(**filtered)
 
 
 def apply() -> None:
