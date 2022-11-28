@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
+import dataclasses
 # {% raw %}
 import distutils.dir_util
 import enum
@@ -11,7 +12,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Mapping, Optional
 import urllib.parse
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
@@ -75,6 +76,11 @@ class CopierAnswers:
         self.build_tool = BuildTool(self.build_tool_str)
         self.namespace_parts = self.python_package_fqname.split(".")
 
+    @classmethod
+    def from_mapping(cls, values: Mapping[str, Any]) -> CopierAnswers:
+        field_names = set(f.name for f in dataclasses.fields(cls))
+        return cls(**{ key: value for key,value in values if key in field_names})
+
 def apply() -> None:
     logger.info("entry: ...")
     logger.debug("files = %s", "\n".join(f"{path}" for path in Path.cwd().glob("**/*")))
@@ -84,7 +90,7 @@ def apply() -> None:
     logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
     logger.debug("COPIER_ANSWERS = %s", COPIER_ANSWERS)
 
-    copier_answers = CopierAnswers(**COPIER_ANSWERS)
+    copier_answers = CopierAnswers.from_mapping(COPIER_ANSWERS)
 
     cwd_path = Path.cwd()
 
