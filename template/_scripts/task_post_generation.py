@@ -1,5 +1,6 @@
+from __future__ import annotations
+from dataclasses import dataclass
 # {% raw %}
-
 import distutils.dir_util
 import enum
 import json
@@ -10,7 +11,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 import urllib.parse
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
@@ -45,11 +46,34 @@ class BuildTool(enum.Enum):
     GO_TASK = "go-task"
 
 
+# class GitAction(enum.Enum):
+#     INIT = "init"
+#     COMMIT = "commit"
+
+#     @classmethod
+#     def from_str(cls, value: Optional[str]) -> Optional[GitAction]:
+#         if value is None:
+#             return None
+#         return cls(value)
+
+
 build_tool_files = {
     BuildTool.GNU_MAKE: "Makefile",
     BuildTool.GO_TASK: "Taskfile.yml",
 }
 
+@dataclass
+class CopierAnswers:
+    python_package_fqname: str
+    variant_str: str
+    build_tool_str: str
+    git_init: bool
+    git_commit: bool
+
+    def __post_init__(self) -> None:
+        self.variant = Variants(self.variant_str)
+        self.build_tool = BuildTool(self.build_tool_str)
+        self.namespace_parts = self.python_package_fqname.split(".")
 
 def apply() -> None:
     logger.info("entry: ...")
@@ -60,15 +84,19 @@ def apply() -> None:
     logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
     logger.debug("COPIER_ANSWERS = %s", COPIER_ANSWERS)
 
+    copier_answers = CopierAnswers(**COPIER_ANSWERS)
+
     cwd_path = Path.cwd()
 
-    namespace_parts: List[str] = COPIER_ANSWERS["python_package_fqname"].split(".")
-    variant = Variants(COPIER_ANSWERS["variant"])
-    build_tool = BuildTool(COPIER_ANSWERS["build_tool"])
-    pkg_files_path = cwd_path.joinpath("pkg_files", variant.value)
+    # namespace_parts: List[str] = COPIER_ANSWERS["python_package_fqname"].split(".")
+    # variant = Variants(COPIER_ANSWERS["variant"])
+    # build_tool = BuildTool(COPIER_ANSWERS["build_tool"])
+    # git_action = GitAction.from_str(COPIER_ANSWERS["git_action"])
+    # git_commit = GitAction
+    pkg_files_path = cwd_path.joinpath("pkg_files", copier_answers.variant.value)
 
-    logger.debug("namespace_parts = %s", namespace_parts)
-    namespace_path = cwd_path.joinpath("src", *namespace_parts)
+    logger.debug("namespace_parts = %s", copier_answers.namespace_parts)
+    namespace_path = cwd_path.joinpath("src", *copier_answers.namespace_parts)
     logger.debug("will make namespace_path.parent %s", namespace_path.parent)
     namespace_path.parent.mkdir(parents=True, exist_ok=True)
     logger.debug("will make namespace_path %s", namespace_path)
@@ -110,7 +138,7 @@ def apply() -> None:
     # else:
     #     logger.info("Not writing %s as it already exists", cookiecutter_input_path)
 
-    remove_files = set(build_tool_files.values()) - {build_tool_files[build_tool]}
+    remove_files = set(build_tool_files.values()) - {build_tool_files[copier_answers.build_tool]}
     logger.info("removing unused build files %s", remove_files)
     for remove_file in remove_files:
         logger.info("removing unused build file %s", remove_file)
@@ -119,9 +147,11 @@ def apply() -> None:
     # # too slow, let users run this ...
     # # subprocess.run(["make", "-C", "devtools", "-B"])
 
-    init_git = COPIER_ANSWERS.get("init_git", "n") == "y"
-    if init_git:
+    if copier_answers.git_init:
         subprocess.run(["git", "init"])
+        if copier_answers.git_commit:
+            subprocess.run(["git", "add", "."])
+            subprocess.run(["git", "commit", "-m", "baseline"])
 
 
 def main() -> None:

@@ -39,6 +39,9 @@ python_version:
 init_git:
   type: bool
   default: true
+init_commit:
+  type: bool
+  default: true
 variant:
   type: str
   choices:
