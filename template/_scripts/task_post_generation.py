@@ -21,7 +21,7 @@ logger = logging.getLogger(
 SCRIPT_PATH = Path(__file__)
 
 # {% endraw %}
-COPIER_ANSWERS_JSON = """{{ _copier_answers | tojson('  ') }}"""
+COPIER_ANSWERS_JSON = """{{ _copier_answers | tojson('  ') | urlencode }}"""
 
 # {% raw %}
 # COPIER_ANSWERS = json.loads(COPIER_ANSWERS_JSON)
