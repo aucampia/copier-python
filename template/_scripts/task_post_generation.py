@@ -15,6 +15,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
+import yaml
+
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
 
 logger = logging.getLogger(
@@ -25,11 +27,14 @@ SCRIPT_PATH = Path(__file__)
 
 # {% endraw %}
 # Using urlencode as jinja2 has no base64 builtin.
-COPIER_ANSWERS_JSON_URLENCODED = """{{ _copier_answers | tojson('  ') | urlencode }}"""
+# COPIER_ANSWERS_JSON_URLENCODED = """{{ _copier_answers | tojson('  ') | urlencode }}"""
 
+COPIER_ANSWERS_FILE = """{{ _copier_conf.answers_file }}"""
 # {% raw %}
-COPIER_ANSWERS_JSON = urllib.parse.unquote(COPIER_ANSWERS_JSON_URLENCODED)
-COPIER_ANSWERS = json.loads(urllib.parse.unquote(COPIER_ANSWERS_JSON))
+# COPIER_ANSWERS_JSON = urllib.parse.unquote(COPIER_ANSWERS_JSON_URLENCODED)
+COPIER_ANSWERS_YAML_PATH = Path(COPIER_ANSWERS_FILE)
+with COPIER_ANSWERS_YAML_PATH.open("r") as io:
+    COPIER_ANSWERS = yaml.safe_load(io)
 assert isinstance(COPIER_ANSWERS, dict)
 
 
