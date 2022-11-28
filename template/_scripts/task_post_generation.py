@@ -1,6 +1,7 @@
 from __future__ import annotations
-from dataclasses import dataclass
+
 import dataclasses
+
 # {% raw %}
 import distutils.dir_util
 import enum
@@ -11,9 +12,10 @@ import os.path
 import shutil
 import subprocess
 import sys
-from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional
 import urllib.parse
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Mapping
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
 
@@ -63,6 +65,7 @@ build_tool_files = {
     BuildTool.GO_TASK: "Taskfile.yml",
 }
 
+
 @dataclass
 class CopierAnswers:
     python_package_fqname: str
@@ -79,7 +82,11 @@ class CopierAnswers:
     @classmethod
     def from_mapping(cls, values: Mapping[str, Any]) -> CopierAnswers:
         field_names = set(f.name for f in dataclasses.fields(cls))
-        return cls(**{ key: value for key,value in values if key in field_names})
+        filtered = dict(
+            (key, value) for key, value in values.items() if key in field_names
+        )
+        return cls(**filtered)
+
 
 def apply() -> None:
     logger.info("entry: ...")
@@ -144,7 +151,9 @@ def apply() -> None:
     # else:
     #     logger.info("Not writing %s as it already exists", cookiecutter_input_path)
 
-    remove_files = set(build_tool_files.values()) - {build_tool_files[copier_answers.build_tool]}
+    remove_files = set(build_tool_files.values()) - {
+        build_tool_files[copier_answers.build_tool]
+    }
     logger.info("removing unused build files %s", remove_files)
     for remove_file in remove_files:
         logger.info("removing unused build file %s", remove_file)
