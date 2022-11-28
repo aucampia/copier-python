@@ -12,8 +12,7 @@ project_name:
 python_package_fqname:
   type: str
   help: Your project fully qualified package name
-  default: |
-    {{ project_name.lower().replace(' ', '_').replace('-', '_') }}
+  default: "{{ project_name.lower().replace(' ', '_').replace('-', '_') }}"
 project_url:
   type: str
   help: Your project's URL
@@ -24,12 +23,10 @@ project_url:
 project_short_description:
   type: str
   help: A short description of your project
-  default: |
-    {{ project_name }}
+  default: "{{ project_name }}"
 cli_name:
   type: str
-  default: |
-    {{ python_package_fqname + '-cli' }}
+  default: "{{ python_package_fqname + '-cli' }}"
 sdpx_license_identifier:
   type: str
   default: UNLICENSED
