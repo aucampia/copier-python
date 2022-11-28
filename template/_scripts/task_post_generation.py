@@ -11,6 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import List
+import urllib.parse
 
 # https://cookiecutter.readthedocs.io/en/latest/advanced/hooks.html
 
@@ -24,8 +25,8 @@ SCRIPT_PATH = Path(__file__)
 COPIER_ANSWERS_JSON = """{{ _copier_answers | tojson('  ') | urlencode }}"""
 
 # {% raw %}
-# COPIER_ANSWERS = json.loads(COPIER_ANSWERS_JSON)
-# assert isinstance(COPIER_ANSWERS, dict)
+COPIER_ANSWERS = json.loads(urllib.parse.unquote(COPIER_ANSWERS_JSON))
+assert isinstance(COPIER_ANSWERS, dict)
 
 
 SCRIPT_PATH = Path(__file__)
