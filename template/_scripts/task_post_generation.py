@@ -22,6 +22,7 @@ logger = logging.getLogger(
 SCRIPT_PATH = Path(__file__)
 
 # {% endraw %}
+# Using urlencode as jinja2 has no base64 builtin.
 COPIER_ANSWERS_JSON_URLENCODED = """{{ _copier_answers | tojson('  ') | urlencode }}"""
 
 # {% raw %}
@@ -109,18 +110,18 @@ def apply() -> None:
     # else:
     #     logger.info("Not writing %s as it already exists", cookiecutter_input_path)
 
-    # remove_files = set(build_tool_files.values()) - {build_tool_files[build_tool]}
-    # logger.info("removing unused build files %s", remove_files)
-    # for remove_file in remove_files:
-    #     logger.info("removing unused build file %s", remove_file)
-    #     (cwd_path / remove_file).unlink()
+    remove_files = set(build_tool_files.values()) - {build_tool_files[build_tool]}
+    logger.info("removing unused build files %s", remove_files)
+    for remove_file in remove_files:
+        logger.info("removing unused build file %s", remove_file)
+        (cwd_path / remove_file).unlink()
 
     # # too slow, let users run this ...
     # # subprocess.run(["make", "-C", "devtools", "-B"])
 
-    # init_git = COOKIECUTTER.get("init_git", "n") == "y"
-    # if init_git:
-    #     subprocess.run(["git", "init"])
+    init_git = COPIER_ANSWERS.get("init_git", "n") == "y"
+    if init_git:
+        subprocess.run(["git", "init"])
 
 
 def main() -> None:

@@ -3,7 +3,7 @@
 ```bash
 \rm -rv var/copied/tmp
 
-PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults copy ./ var/copied/tmp
+PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults copy ./ var/copied/tmp/defaults
 ```
 
 ```bash
