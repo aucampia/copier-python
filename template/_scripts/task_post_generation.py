@@ -24,8 +24,8 @@ SCRIPT_PATH = Path(__file__)
 COPIER_ANSWERS_JSON = """{{ _copier_answers | tojson('  ') }}"""
 
 # {% raw %}
-# COPIER_ANSWERS = json.loads(COPIER_ANSWERS_JSON)
-# assert isinstance(COPIER_ANSWERS, dict)
+COPIER_ANSWERS = json.loads(COPIER_ANSWERS_JSON)
+assert isinstance(COPIER_ANSWERS, dict)
 
 
 SCRIPT_PATH = Path(__file__)
