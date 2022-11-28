@@ -22,9 +22,10 @@ logger = logging.getLogger(
 SCRIPT_PATH = Path(__file__)
 
 # {% endraw %}
-COPIER_ANSWERS_JSON = """{{ _copier_answers | tojson('  ') | urlencode }}"""
+COPIER_ANSWERS_JSON_URLENCODED = """{{ _copier_answers | tojson('  ') | urlencode }}"""
 
 # {% raw %}
+COPIER_ANSWERS_JSON = urllib.parse.unquote(COPIER_ANSWERS_JSON_URLENCODED)
 COPIER_ANSWERS = json.loads(urllib.parse.unquote(COPIER_ANSWERS_JSON))
 assert isinstance(COPIER_ANSWERS, dict)
 
@@ -56,6 +57,8 @@ def apply() -> None:
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
     logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
+    logger.debug("COPIER_ANSWERS = %s", COPIER_ANSWERS)
+
 
     # cwd_path = Path.cwd()
 
