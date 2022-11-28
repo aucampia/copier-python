@@ -1,10 +1,10 @@
 # ...
 
 ```bash
-\rm -rv var/copied/tmp
+\rm -rvf var/copied/tmp
 
 PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults copy ./ var/copied/tmp/defaults
-copier update var/copied/tmp/defaults
+PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults update var/copied/tmp/defaults
 ```
 
 ```bash

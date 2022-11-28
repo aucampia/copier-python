@@ -90,7 +90,7 @@ class CopierAnswers:
 
 def apply() -> None:
     logger.info("entry: ...")
-    logger.debug("files = %s", "\n".join(f"{path}" for path in Path.cwd().glob("**/*")))
+    # logger.debug("files = %s", "\n".join(f"{path}" for path in Path.cwd().glob("**/*")))
     logger.debug("os.getcwd() = %s", os.getcwd())
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
