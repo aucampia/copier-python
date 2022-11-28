@@ -36,10 +36,10 @@ version:
 python_version:
   type: str
   default: "3.7"
-init_git:
+git_init:
   type: bool
   default: true
-init_commit:
+git_commit:
   type: bool
   default: true
 variant:
