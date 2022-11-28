@@ -81,10 +81,13 @@ class CopierAnswers:
 
     @classmethod
     def from_mapping(cls, values: Mapping[str, Any]) -> CopierAnswers:
+
         field_names = set(f.name for f in dataclasses.fields(cls))
+        logging.info("field_names = %s", field_names)
         filtered = dict(
             (key, value) for key, value in values.items() if key in field_names
         )
+        logging.info("filtered = %s", filtered)
         return cls(**filtered)
 
 
