@@ -4,7 +4,7 @@
 \rm -rvf var/copied/tmp
 
 PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults copy ./ var/copied/tmp/defaults
-PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults update var/copied/tmp/defaults
+PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults --conflict inline update var/copied/tmp/defaults
 
 git -C var/copied/tmp/defaults log -p
 (cd var/copied/tmp/defaults; bash)
