@@ -59,36 +59,35 @@ def apply() -> None:
     logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
     logger.debug("COPIER_ANSWERS = %s", COPIER_ANSWERS)
 
+    cwd_path = Path.cwd()
 
-    # cwd_path = Path.cwd()
+    namespace_parts: List[str] = COPIER_ANSWERS["python_package_fqname"].split(".")
+    variant = Variants(COPIER_ANSWERS["variant"])
+    build_tool = BuildTool(COPIER_ANSWERS["build_tool"])
+    pkg_files_path = cwd_path.joinpath("pkg_files", variant.value)
 
-    # namespace_parts: List[str] = COOKIECUTTER["python_package_fqname"].split(".")
-    # variant = Variants(COOKIECUTTER["variant"])
-    # build_tool = BuildTool(COOKIECUTTER["build_tool"])
-    # pkg_files_path = cwd_path.joinpath("pkg_files", variant.value)
-
-    # logger.debug("namespace_parts = %s", namespace_parts)
-    # namespace_path = cwd_path.joinpath("src", *namespace_parts)
-    # logger.debug("will make namespace_path.parent %s", namespace_path.parent)
-    # namespace_path.parent.mkdir(parents=True, exist_ok=True)
-    # logger.debug("will make namespace_path %s", namespace_path)
-    # namespace_path.mkdir(parents=True, exist_ok=True)
-    # logger.debug(
-    #     "will copytree pkg_files_path %s to namespace_path %s",
-    #     pkg_files_path,
-    #     namespace_path,
-    # )
-    # distutils.dir_util.copy_tree(
-    #     str(pkg_files_path),
-    #     str(namespace_path),
-    #     preserve_mode=0,
-    #     preserve_times=0,
-    #     preserve_symlinks=1,
-    #     update=1,
-    #     verbose=1,
-    # )
-    # logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
-    # shutil.rmtree(pkg_files_path.parent)
+    logger.debug("namespace_parts = %s", namespace_parts)
+    namespace_path = cwd_path.joinpath("src", *namespace_parts)
+    logger.debug("will make namespace_path.parent %s", namespace_path.parent)
+    namespace_path.parent.mkdir(parents=True, exist_ok=True)
+    logger.debug("will make namespace_path %s", namespace_path)
+    namespace_path.mkdir(parents=True, exist_ok=True)
+    logger.debug(
+        "will copytree pkg_files_path %s to namespace_path %s",
+        pkg_files_path,
+        namespace_path,
+    )
+    distutils.dir_util.copy_tree(
+        str(pkg_files_path),
+        str(namespace_path),
+        preserve_mode=0,
+        preserve_times=0,
+        preserve_symlinks=1,
+        update=1,
+        verbose=1,
+    )
+    logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
+    shutil.rmtree(pkg_files_path.parent)
 
     # cookiecutter_input_path = cwd_path.joinpath("cookiecutter-input.yaml")
     # if not cookiecutter_input_path.exists():
