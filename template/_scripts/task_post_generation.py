@@ -24,8 +24,8 @@ SCRIPT_PATH = Path(__file__)
 COPIER_ANSWERS_JSON = """{{ _copier_answers | tojson('  ') }}"""
 
 # {% raw %}
-COPIER_ANSWERS = json.loads(COPIER_ANSWERS_JSON)
-assert isinstance(COPIER_ANSWERS, dict)
+# COPIER_ANSWERS = json.loads(COPIER_ANSWERS_JSON)
+# assert isinstance(COPIER_ANSWERS, dict)
 
 
 SCRIPT_PATH = Path(__file__)
@@ -50,11 +50,11 @@ build_tool_files = {
 
 def apply() -> None:
     logger.info("entry: ...")
+    logger.debug("files = %s", "\n".join(f"{path}" for path in Path.cwd().glob("**/*")))
     logger.debug("os.getcwd() = %s", os.getcwd())
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
     logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
-    logger.debug("files = %s", "\n".join(f"{path}" for path in Path.cwd().glob("**/*")))
 
     # cwd_path = Path.cwd()
 
