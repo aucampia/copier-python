@@ -100,7 +100,7 @@ def apply() -> None:
     logger.debug("os.getcwd() = %s", os.getcwd())
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
-    logger.debug("COPIER_ANSWERS_JSON = %s", COPIER_ANSWERS_JSON)
+    logger.debug("COPIER_ANSWERS_FILE = %s", COPIER_ANSWERS_FILE)
     logger.debug("COPIER_ANSWERS = %s", COPIER_ANSWERS)
 
     copier_answers = CopierAnswers.from_mapping(COPIER_ANSWERS)
