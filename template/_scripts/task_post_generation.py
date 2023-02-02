@@ -26,12 +26,8 @@ logger = logging.getLogger(
 SCRIPT_PATH = Path(__file__)
 
 # {% endraw %}
-# Using urlencode as jinja2 has no base64 builtin.
-# COPIER_ANSWERS_JSON_URLENCODED = """{{ _copier_answers | tojson('  ') | urlencode }}"""
-
 COPIER_ANSWERS_FILE = """{{ _copier_conf.answers_file }}"""
 # {% raw %}
-# COPIER_ANSWERS_JSON = urllib.parse.unquote(COPIER_ANSWERS_JSON_URLENCODED)
 COPIER_ANSWERS_YAML_PATH = Path(COPIER_ANSWERS_FILE)
 with COPIER_ANSWERS_YAML_PATH.open("r") as io:
     COPIER_ANSWERS = yaml.safe_load(io)
@@ -50,18 +46,6 @@ class Variant(enum.Enum):
 class BuildTool(enum.Enum):
     GNU_MAKE = "gnu-make"
     GO_TASK = "go-task"
-
-
-# class GitAction(enum.Enum):
-#     INIT = "init"
-#     COMMIT = "commit"
-
-#     @classmethod
-#     def from_str(cls, value: Optional[str]) -> Optional[GitAction]:
-#         if value is None:
-#             return None
-#         return cls(value)
-
 
 build_tool_files = {
     BuildTool.GNU_MAKE: "Makefile",
@@ -95,9 +79,6 @@ class CopierAnswers:
 
 def apply() -> None:
     logger.info("entry: ...")
-    # logger.debug("files = %s", "\n".join(f"{path}" for path in Path.cwd().glob("**/*")))
-    # logger.debug("os.environ = %s", os.environ)
-    # logger.debug("os.getcwd() = %s", os.getcwd())
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
     logger.debug("COPIER_ANSWERS_FILE = %s", COPIER_ANSWERS_FILE)
@@ -107,11 +88,6 @@ def apply() -> None:
 
     cwd_path = Path.cwd()
 
-    # namespace_parts: List[str] = COPIER_ANSWERS["python_package_fqname"].split(".")
-    # variant = Variants(COPIER_ANSWERS["variant"])
-    # build_tool = BuildTool(COPIER_ANSWERS["build_tool"])
-    # git_action = GitAction.from_str(COPIER_ANSWERS["git_action"])
-    # git_commit = GitAction
     pkg_files_path = cwd_path.joinpath("pkg_files", copier_answers.variant.value)
 
     logger.debug("namespace_parts = %s", copier_answers.namespace_parts)
@@ -137,26 +113,6 @@ def apply() -> None:
     logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
     shutil.rmtree(pkg_files_path.parent)
 
-    # cookiecutter_input_path = cwd_path.joinpath("cookiecutter-input.yaml")
-    # if not cookiecutter_input_path.exists():
-    #     try:
-    #         import yaml
-
-    #         logger.info("Writing cookiecutter input to %s", cookiecutter_input_path)
-    #         with open(cwd_path.joinpath("cookiecutter-input.yaml"), "w") as file_object:
-    #             data = {"default_context": COOKIECUTTER.copy()}
-    #             for key in ("_template", "_output_dir"):
-    #                 if key in data["default_context"]:
-    #                     del data["default_context"][key]
-    #             yaml.safe_dump(data, file_object)
-    #     except ImportError:
-    #         logger.warning(
-    #             "no yaml, %s will not be written - install pyyaml to fix",
-    #             cookiecutter_input_path,
-    #         )
-    # else:
-    #     logger.info("Not writing %s as it already exists", cookiecutter_input_path)
-
     remove_files = set(build_tool_files.values()) - {
         build_tool_files[copier_answers.build_tool]
     }
@@ -164,9 +120,6 @@ def apply() -> None:
     for remove_file in remove_files:
         logger.info("removing unused build file %s", remove_file)
         (cwd_path / remove_file).unlink()
-
-    # # too slow, let users run this ...
-    # # subprocess.run(["make", "-C", "devtools", "-B"])
 
     if copier_answers.git_init:
         subprocess.run(["git", "init"])
