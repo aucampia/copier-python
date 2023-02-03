@@ -47,6 +47,7 @@ class BuildTool(enum.Enum):
     GNU_MAKE = "gnu-make"
     GO_TASK = "go-task"
 
+
 build_tool_files = {
     BuildTool.GNU_MAKE: "Makefile",
     BuildTool.GO_TASK: "Taskfile.yml",
