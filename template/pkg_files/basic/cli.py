@@ -57,7 +57,6 @@ def cli_version(ctx: typer.Context) -> None:
 
 @cli_sub.callback()
 def cli_sub_callback(ctx: typer.Context) -> None:
-
     logger.debug(
         "entry",
         ctx_parent_params=({} if ctx.parent is None else ctx.parent.params),
@@ -71,7 +70,6 @@ def cli_sub_leaf(
     name: Optional[str] = typer.Option("fake", "--name", "-n", help="The name ..."),
     numbers: Optional[List[int]] = typer.Argument(None),
 ) -> None:
-
     logger.debug(
         "entry",
         ctx_parent_params=({} if ctx.parent is None else ctx.parent.params),

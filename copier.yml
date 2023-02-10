@@ -2,7 +2,9 @@
 # https://copier.readthedocs.io/en/stable/configuring/#available-settings
 _subdirectory: template
 _templates_suffix: ""
+_exclude: ["copier.yaml", "copier.yml", "~*", "*.py[co]", "__pycache__", ".git", ".DS_Store", ".svn", "var"]
 _tasks:
+  - env
   - pwd
   - "python _scripts/task_post_generation.py"
 project_name:
@@ -53,6 +55,7 @@ build_tool:
   choices:
     gnu-make: gnu-make
     go-task: go-task
+    poe: poe
   default: go-task
 use_poetry_dynamic_versioning:
   type: bool

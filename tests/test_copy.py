@@ -4,11 +4,11 @@ import json
 import logging
 import os
 import pickle
-from shutil import rmtree
 import subprocess
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+from shutil import rmtree
 from typing import Any, Callable, Dict, Generator, Mapping, Set, TypeVar
 
 import pytest
@@ -111,7 +111,6 @@ ESCAPED_ENV = escape_venv(os.environ)
 
 class Copier:
     def __init__(self) -> None:
-
         self._copied: Dict[CopyKey, CopyResult] = {}
 
     def copy(self, template_path: Path, data: Dict[str, Any]) -> CopyResult:
@@ -154,7 +153,6 @@ class Copier:
             and (next(output_path.glob("*"), None) is not None)
             and TEST_RAPID
         ):
-
             answers = json.loads(output_answers_path.read_text())
             # output_project = json.loads(output_project_path.read_text())
             copied = CopyResult(
@@ -179,7 +177,7 @@ class Copier:
             ),
         )
 
-        copy_result = run_copy(
+        run_copy(
             f"{template_path}",
             f"{output_path}",
             data=data,

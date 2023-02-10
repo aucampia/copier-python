@@ -3,17 +3,15 @@ from __future__ import annotations
 # {% raw %}
 import distutils.dir_util
 import enum
-import json
 import logging
 import os
 import os.path
 import shutil
 import subprocess
 import sys
-import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Set
 
 import yaml
 
@@ -46,11 +44,12 @@ class Variant(enum.Enum):
 class BuildTool(enum.Enum):
     GNU_MAKE = "gnu-make"
     GO_TASK = "go-task"
+    POE = "poe"
 
 
 build_tool_files = {
-    BuildTool.GNU_MAKE: "Makefile",
-    BuildTool.GO_TASK: "Taskfile.yml",
+    BuildTool.GNU_MAKE: {"Makefile"},
+    BuildTool.GO_TASK: {"Taskfile.yml"},
 }
 
 
@@ -114,9 +113,8 @@ def apply() -> None:
     logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
     shutil.rmtree(pkg_files_path.parent)
 
-    remove_files = set(build_tool_files.values()) - {
-        build_tool_files[copier_answers.build_tool]
-    }
+    remove_files: Set[str] = set(*build_tool_files.values())
+    remove_files -= build_tool_files.get(copier_answers.build_tool, set())
     logger.info("removing unused build files %s", remove_files)
     for remove_file in remove_files:
         logger.info("removing unused build file %s", remove_file)
