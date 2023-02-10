@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import enum
 import hashlib
 import itertools
 import json
@@ -9,13 +12,15 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from shutil import rmtree
-from typing import Any, Callable, Dict, Generator, Mapping, Set, TypeVar
+from typing import Any, Callable, Dict, Generator, Mapping, Set, Tuple, TypeVar
 
 import pytest
 import yaml
 from _pytest.mark.structures import ParameterSet
 from copier import run_copy
 from frozendict import frozendict
+
+from _scripts.task_post_generation import BuildTool
 
 SCRIPT_PATH = Path(__file__)
 PROJECT_PATH = SCRIPT_PATH.parent.parent
@@ -63,7 +68,7 @@ class CopyResult(CopyKey):
 
 AnyT = TypeVar("AnyT")
 
-TEST_RAPID = json.loads(os.environ.get("TEST_RAPID", "false"))
+TEST_RAPID = json.loads(os.environ.get("TEST_RAPID", "true"))
 assert isinstance(TEST_RAPID, bool)
 
 
@@ -224,34 +229,51 @@ class Copier:
 COPIER = Copier()
 
 
+class WorkflowAction(enum.Enum):
+    VALIDATE = "validate"
+    CLI = "cli"
+
+
+WORKFLOW_ACTION_FACTORIES: Dict[
+    Tuple[WorkflowAction, BuildTool], Callable[[CopyResult], str]
+] = {
+    (WorkflowAction.VALIDATE, BuildTool.GNU_MAKE): lambda result: "make validate",
+    (WorkflowAction.VALIDATE, BuildTool.GO_TASK): lambda result: "task validate",
+    (WorkflowAction.VALIDATE, BuildTool.POE): lambda result: "poetry run poe validate",
+    (
+        WorkflowAction.CLI,
+        BuildTool.GNU_MAKE,
+    ): lambda result: f'poetry run {result.answers["cli_name"]} -vvvv sub leaf',
+    (
+        WorkflowAction.CLI,
+        BuildTool.GO_TASK,
+    ): lambda result: f'task venv:run -- {result.answers["cli_name"]} -vvvv sub leaf',
+    (
+        WorkflowAction.CLI,
+        BuildTool.POE,
+    ): lambda result: f'poetry run {result.answers["cli_name"]} -vvvv sub leaf',
+}
+
+# def get_command(self, result: CopyResult) -> None:
+#     if build_tool == BuildTool.GNU_MAKE:
+
+
 def make_copied_cmd_cases() -> Generator[ParameterSet, None, None]:
-    config_names = {"minimal", "basic"}
-    # config_names = {
-    #     "minimal",
-    # }
-    for config_name, (cmd_name, cmd) in itertools.product(
+    config_names = {"minimal", "basic", "poe-minimal"}
+    for config_name, workflow_action in itertools.product(
         config_names,
-        [
-            (
-                "validate",
-                lambda result: "task validate",
-            ),
-            (
-                "cli",
-                lambda result: f'task venv:run -- {result.answers["cli_name"]} -vvvv sub leaf',
-            ),
-        ],
+        WorkflowAction,
     ):
         data = load_answers(config_name)
         if config_name == "everything":
             data["init_git"] = "y"
-        yield pytest.param(data, cmd, id=f"{config_name}-{cmd_name}")
+        yield pytest.param(data, workflow_action, id=f"{config_name}-{workflow_action}")
 
 
-@pytest.mark.parametrize(["data", "cmd"], make_copied_cmd_cases())
+@pytest.mark.parametrize(["data", "workflow_action"], make_copied_cmd_cases())
 def test_copied_cmd(
     data: Dict[str, Any],
-    cmd: Callable[[CopyResult], str],
+    workflow_action: WorkflowAction,
     tmp_path: Path,
 ) -> None:
     result = COPIER.copy(template_path=PROJECT_PATH, data=data)
@@ -259,6 +281,8 @@ def test_copied_cmd(
     # output_path = tmp_path
     output_path = result.output_path
     logging.info("result = %s, output_path = %s", result, output_path)
+
+    build_tool = BuildTool(result.answers["build_tool"])
 
     # subprocess.run(
     #     cwd=output_path,
@@ -287,7 +311,7 @@ def test_copied_cmd(
             f"""
 set -eo pipefail
 set -x
-{cmd(result)}
+{WORKFLOW_ACTION_FACTORIES[(workflow_action, build_tool)](result)}
     """,
         ],
     )

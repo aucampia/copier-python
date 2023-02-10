@@ -7,7 +7,7 @@
 ## ...
 
 ```bash
-\rm -rvf var/copied/tmp; PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults copy ./ var/copied/tmp/defaults
+\rm -rvf var/copied/tmp; PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults --data copy ./ var/copied/tmp/defaults
 PYLOGGING_LEVEL=DEBUG copier --vcs-ref HEAD --defaults update var/copied/tmp/defaults
 
 git -C var/copied/tmp/defaults status

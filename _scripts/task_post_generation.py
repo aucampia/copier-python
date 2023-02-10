@@ -25,12 +25,12 @@ SCRIPT_PATH = Path(__file__)
 TEMPLATE_PATH = SCRIPT_PATH.parent.parent
 
 
-class Variant(enum.Enum):
+class Variant(str, enum.Enum):
     BASIC = "basic"
     MINIMAL = "minimal"
 
 
-class BuildTool(enum.Enum):
+class BuildTool(str, enum.Enum):
     GNU_MAKE = "gnu-make"
     GO_TASK = "go-task"
     POE = "poe"
