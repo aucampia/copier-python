@@ -10,6 +10,9 @@ task validate:fix validate
 {% elif build_tool == "gnu-make" %}
 make help
 make validate-fix validate
+{% elif build_tool == "poe" %}
+poetry run poe help
+poetry run poe validate-fix && poetry run poe validate
 {% else %}
 {{ None["[ERROR] Invalid build_tool " ~ build_tool][0] }}
 {% endif %}
