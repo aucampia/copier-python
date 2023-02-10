@@ -51,8 +51,6 @@ class CopierAnswers:
     git_commit: bool
 
     def __post_init__(self) -> None:
-        # self.variant = Variants(self.variant)
-        # self.build_tool = BuildTool(self.build_tool)
         self.namespace_parts = self.python_package_fqname.split(".")
 
     @classmethod
@@ -67,17 +65,20 @@ class CopierAnswers:
 
 
 def apply(copier_conf_json: str) -> None:
-    copier_conf = json.loads(copier_conf_json)
-    assert isinstance(copier_conf, dict)
-    copier_answers_file = Path(copier_conf["answers_file"])
-    with copier_answers_file.open("r") as io:
-        copier_answers = yaml.safe_load(io)
-
     logger.info("entry: ...")
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
+    logger.debug("copier_conf_json = %s", copier_conf_json)
+
+    copier_conf = json.loads(copier_conf_json)
+    logger.debug("copier_conf = %s", copier_conf)
+    assert isinstance(copier_conf, dict)
+    copier_answers_file = Path(copier_conf["answers_file"])
     logger.debug("copier_answers_file = %s", copier_answers_file)
+    with copier_answers_file.open("r") as io:
+        copier_answers = yaml.safe_load(io)
     logger.debug("copier_answers = %s", copier_answers)
+    assert isinstance(copier_answers, dict)
 
     copier_answers = CopierAnswers.from_mapping(copier_answers)
 
