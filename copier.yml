@@ -9,11 +9,11 @@ _tasks: # This runs from inside the target directory
 project_name:
   type: str
   help: Your project's name
-  default: example.project
+  default: example-project
 python_package_fqname:
   type: str
   help: Your project fully qualified package name
-  default: "{{ project_name.lower().replace(' ', '_').replace('-', '_') }}"
+  default: "{{ project_name.lower().replace(' ', '_').replace('-', '.') }}"
 project_url:
   type: str
   help: Your project's URL
