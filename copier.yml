@@ -4,7 +4,7 @@ _subdirectory: template
 _templates_suffix: ""
 _exclude: ["copier.yaml", "copier.yml", "~*", "*.py[co]", "__pycache__", ".git", ".DS_Store", ".svn", "var"]
 _tasks: # This runs from inside the target directory
-  - "python _scripts/task_post_generation.py"
+  # - "python _scripts/task_post_generation.py"
   - ["{{ _copier_python }}", "{{ _copier_conf.src_path }}/_scripts/task_post_generation.py", "--copier-conf={{ _copier_conf | to_json }}"]
 project_name:
   type: str
