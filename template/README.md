@@ -30,6 +30,9 @@ docker compose run --rm python-devtools task validate:fix validate
 {% elif build_tool == "gnu-make" %}
 docker compose run --rm python-devtools make help
 docker compose run --rm python-devtools make validate-fix validate
+{% elif build_tool == "poe" %}
+docker compose run --rm python-devtools run poe help
+docker compose run --rm python-devtools run poe validate-fix && poetry run poe validate
 {% else %}
 {{ None["[ERROR] Invalid build_tool " ~ build_tool][0] }}
 {% endif %}
