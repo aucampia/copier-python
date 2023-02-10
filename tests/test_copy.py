@@ -64,6 +64,7 @@ class CopyKey:
 class CopyResult(CopyKey):
     output_path: Path
     answers: Dict[str, Any]
+    build_tool: BuildTool
 
 
 AnyT = TypeVar("AnyT")
@@ -159,6 +160,7 @@ class Copier:
             and TEST_RAPID
         ):
             answers = json.loads(output_answers_path.read_text())
+            build_tool = BuildTool(answers["build_tool"])
             # output_project = json.loads(output_project_path.read_text())
             copied = CopyResult(
                 template_path,
@@ -166,6 +168,7 @@ class Copier:
                 frozendict(data),
                 output_path,
                 answers,
+                build_tool,
             )
             return copied
 
@@ -197,32 +200,59 @@ class Copier:
 
         output_answers_path.write_text(json.dumps(answers))
         # output_project_path.write_text(json.dumps(str(project_path)))
-
+        build_tool = BuildTool(answers["build_tool"])
         copied = CopyResult(
             template_path,
             template_path_hash,
             frozendict(data),
             output_path,
             answers,
+            build_tool,
         )
 
-        subprocess.run(
-            cwd=copied.output_path,
-            env=ESCAPED_ENV,
-            check=True,
-            args=[
-                "bash",
-                "-c",
-                """
-            set -x
-            set -eo pipefail
-            # env | sort
-            task configure
-            task validate:fix
-        """,
-            ],
-        )
-
+        if copied.build_tool == BuildTool.GNU_MAKE:
+            configure_commands = """
+make configure
+make validate-fix
+"""
+        elif copied.build_tool == BuildTool.GO_TASK:
+            configure_commands = """
+task configure
+task validate:fix
+"""
+        elif copied.build_tool == BuildTool.POE:
+            configure_commands = """
+poetry install
+poetry run poe validate:fix
+"""
+        try:
+            subprocess.run(
+                cwd=copied.output_path,
+                env=ESCAPED_ENV,
+                check=True,
+                args=[
+                    "bash",
+                    "-c",
+                    f"""
+    set -x
+    set -eo pipefail
+    # env | sort
+    {configure_commands}
+    """,
+                ],
+            )
+        except Exception:
+            rmtree(
+                output_path,
+                ignore_errors=True,
+                onerror=lambda function, path, excinfo: logging.info(
+                    "rmtree error: function = %s, path = %s, excinfo = %s",
+                    function,
+                    path,
+                    excinfo,
+                ),
+            )
+            raise
         return copied
 
 
@@ -282,8 +312,6 @@ def test_copied_cmd(
     output_path = result.output_path
     logging.info("result = %s, output_path = %s", result, output_path)
 
-    build_tool = BuildTool(result.answers["build_tool"])
-
     # subprocess.run(
     #     cwd=output_path,
     #     env=ESCAPED_ENV,
@@ -311,7 +339,7 @@ def test_copied_cmd(
             f"""
 set -eo pipefail
 set -x
-{WORKFLOW_ACTION_FACTORIES[(workflow_action, build_tool)](result)}
+{WORKFLOW_ACTION_FACTORIES[(workflow_action, result.build_tool)](result)}
     """,
         ],
     )
