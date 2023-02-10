@@ -1,6 +1,6 @@
 from __future__ import annotations
-import argparse
 
+import argparse
 import distutils.dir_util
 import enum
 import itertools
@@ -22,7 +22,7 @@ logger = logging.getLogger(
 )
 
 SCRIPT_PATH = Path(__file__)
-TEMPLATE_PATH = SCRIPT_PATH.parent
+TEMPLATE_PATH = SCRIPT_PATH.parent.parent
 
 
 class Variant(enum.Enum):
