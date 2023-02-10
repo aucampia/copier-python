@@ -65,7 +65,7 @@ class CopierAnswers:
 
 
 def apply(copier_conf_json: str) -> None:
-    logger.info("entry: ...")
+    logger.info("entry: os.cwd() = %s", os.getcwd())
     logger.debug("SCRIPT_PATH = %s", SCRIPT_PATH.absolute())
     logger.debug("TEMPLATE_PATH = %s", TEMPLATE_PATH.absolute())
     logger.debug("copier_conf_json = %s", copier_conf_json)
