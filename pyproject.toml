@@ -39,7 +39,7 @@ show_missing = true
 [tool.isort]
 # https://pycqa.github.io/isort/docs/configuration/config_files.html
 profile = "black"
-src_paths = ["template/_scripts", "tests"]
+src_paths = ["tests", "_scripts", "template/_script"]
 
 [tool.pytest.ini_options]
 # https://docs.pytest.org/en/stable/customize.html
@@ -60,7 +60,7 @@ log_cli_date_format = "%Y-%m-%dT%H:%M:%S"
 
 [tool.mypy]
 # https://mypy.readthedocs.io/en/stable/config_file.html
-files = "tests,template/_scripts,template/pkg_files"
+files = "tests,_scripts,template/_scripts,template/pkg_files"
 python_version = "3.10"
 strict = true
 warn_unreachable = true
@@ -80,7 +80,7 @@ ignore_missing_imports = true
 [tool.pycln]
 # https://hadialqattan.github.io/pycln/#/?id=cli-options
 # https://hadialqattan.github.io/pycln/#/?id=example
-paths = ["tests", "template/_scripts", "template/pkg_files"]
+paths = ["tests", "_scripts", "template/_scripts", "template/pkg_files"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
