@@ -223,7 +223,7 @@ task validate:fix
         elif copied.build_tool == BuildTool.POE:
             configure_commands = """
 poetry install
-poetry run poe validate:fix
+poetry run poe validate-fix
 """
         try:
             subprocess.run(

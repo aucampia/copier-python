@@ -82,7 +82,7 @@ PYTHON_SOURCE="src tests"
 help = "perform static validation"
 sequence = [
     { cmd = "mypy --show-error-context --show-error-codes ${PYTHON_SOURCE}" },
-    { cmd = "codespell ${PYTHON_SOURCE}" },
+    { cmd = "codespell --config=setup.cfg ${PYTHON_SOURCE}" },
     { cmd = "isort --check --diff ${PYTHON_SOURCE}" },
     { cmd = "black --check --diff ${PYTHON_SOURCE}" },
     { cmd = "flake8 ${PYTHON_SOURCE}" },
