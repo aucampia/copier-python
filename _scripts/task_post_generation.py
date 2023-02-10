@@ -126,7 +126,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(add_help=True)
     parser.add_argument(
         "--copier-conf",
-        action="save",
+        action="store",
+        type=str,
         dest="copier_conf",
         help="the copier config as a JSON object",
         required=True,
