@@ -40,6 +40,9 @@ pytest-cov = "^4.0.0"
 types-PyYAML = "^6.0.12.5"
 typing-extensions = "^4.4.0"
 pip-audit = "^2.4.14"
+# {% if build_tool == "poe" %}
+poethepoet = "^0.18.1"
+# {% endif %}
 
 [tool.coverage.report]
 # https://coverage.readthedocs.io/en/coverage-5.0/config.html
