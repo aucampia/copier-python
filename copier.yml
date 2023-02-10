@@ -3,10 +3,8 @@
 _subdirectory: template
 _templates_suffix: ""
 _exclude: ["copier.yaml", "copier.yml", "~*", "*.py[co]", "__pycache__", ".git", ".DS_Store", ".svn", "var"]
-_tasks:
-  - env
-  - pwd
-  - "python _scripts/task_post_generation.py"
+_tasks: # This runs from inside the target directory
+  - "python .scripts/task_post_generation.py"
 project_name:
   type: str
   help: Your project's name
