@@ -55,7 +55,7 @@ build_tool:
     gnu-make: gnu-make
     go-task: go-task
     poe: poe
-  default: poe
+  default: go-task
 use_poetry_dynamic_versioning:
   type: bool
   default: false
