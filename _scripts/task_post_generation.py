@@ -28,6 +28,7 @@ TEMPLATE_PATH = SCRIPT_PATH.parent.parent
 class Variant(str, enum.Enum):
     BASIC = "basic"
     MINIMAL = "minimal"
+    MINIMAL_TYPER = "minimal_typer"
 
 
 class BuildTool(str, enum.Enum):

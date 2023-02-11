@@ -48,6 +48,7 @@ variant:
   choices:
     basic: basic
     minimal: minimal
+    minimal_typer: minimal_typer
   default: basic
 build_tool:
   type: str

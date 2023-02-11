@@ -289,7 +289,7 @@ WORKFLOW_ACTION_FACTORIES: Dict[
 
 
 def make_copied_cmd_cases() -> Generator[ParameterSet, None, None]:
-    config_names = {"minimal", "basic", "poe-minimal"}
+    config_names = {"minimal", "basic", "poe_minimal", "minimal_typer"}
     for config_name, workflow_action in itertools.product(
         config_names,
         WorkflowAction,
