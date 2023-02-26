@@ -19,7 +19,7 @@ https://typer.tiangolo.com/tutorial/options/
 """
 
 
-cli = typer.Typer()
+cli = typer.Typer(pretty_exceptions_enable=False)
 cli_sub = typer.Typer()
 cli.add_typer(cli_sub, name="sub")
 
@@ -82,7 +82,7 @@ def main() -> None:
 
 def setup_logging() -> None:
     logging.basicConfig(
-        level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
+        level=os.environ.get("PYTHON_LOGGING_LEVEL", logging.INFO),
         stream=sys.stderr,
         datefmt="%Y-%m-%dT%H:%M:%S",
         format=(

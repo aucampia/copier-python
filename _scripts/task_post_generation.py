@@ -136,7 +136,7 @@ def main() -> None:
     )
     parse_result = parser.parse_args(sys.argv[1:])
     logging.basicConfig(
-        level=os.environ.get("PYLOGGING_LEVEL", logging.INFO),
+        level=os.environ.get("PYTHON_LOGGING_LEVEL", logging.INFO),
         stream=sys.stderr,
         datefmt="%Y-%m-%dT%H:%M:%S",
         format=(
