@@ -2,11 +2,11 @@
 import logging
 import os
 import sys
-from typing import List, Optional
 
 import typer
 
-from ._version import __version__
+from .._version import __version__
+from .sub import cli_sub
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,6 @@ https://typer.tiangolo.com/tutorial/options/
 
 
 cli = typer.Typer(pretty_exceptions_enable=False)
-cli_sub = typer.Typer()
 cli.add_typer(cli_sub, name="sub")
 
 
@@ -51,28 +50,6 @@ def cli_callback(
 @cli.command("version")
 def cli_version(ctx: typer.Context) -> None:
     sys.stderr.write(f"{__version__}\n")
-
-
-@cli_sub.callback()
-def cli_sub_callback(ctx: typer.Context) -> None:
-    logger.debug(
-        "entry: ctx_parent_params = %s, ctx_params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
-    )
-
-
-@cli_sub.command("leaf")
-def cli_sub_leaf(
-    ctx: typer.Context,
-    name: Optional[str] = typer.Option("fake", "--name", "-n", help="The name ..."),
-    numbers: Optional[List[int]] = typer.Argument(None),
-) -> None:
-    logger.debug(
-        "entry: ctx_parent_params = %s, ctx_params = %s",
-        ({} if ctx.parent is None else ctx.parent.params),
-        ctx.params,
-    )
 
 
 def main() -> None:
