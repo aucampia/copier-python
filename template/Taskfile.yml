@@ -72,6 +72,11 @@ tasks:
     cmds:
       - task: validate:static
       - task: test
+  fix-and-validate:
+    desc: Perform all validation
+    cmds:
+      - task: validate:fix
+      - task: validate
   clean:
     desc: Clean everything
     cmds:

@@ -75,6 +75,13 @@ warn_unreachable = true
 warn_unused_configs = true
 explicit_package_bases = true
 namespace_packages = true
+plugins = ["pydantic.mypy"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true
 
 # {% if build_tool == "poe" %}
 [tool.poe.env]
@@ -110,6 +117,13 @@ help = "validate everything"
 sequence = [
     { ref = "validate-static" },
     { ref = "test" },
+]
+
+[tool.poe.tasks.fix-and-validate]
+help = "fix things then validate"
+sequence = [
+    { ref = "validate-fix" },
+    { ref = "validate" },
 ]
 # {% endif %}
 
