@@ -88,7 +88,12 @@ def apply(copier_conf_json: str) -> None:
     cwd_path = Path.cwd()
 
     pkg_files_path = cwd_path.joinpath("pkg_files", copier_answers.variant.value)
-    logger.debug("cwd_path = %s, pkg_files_path = %s, pkg_files_path.absolute() = %s", cwd_path, pkg_files_path)
+    logger.debug(
+        "cwd_path = %s, pkg_files_path = %r / %r",
+        cwd_path,
+        pkg_files_path,
+        pkg_files_path.absolute(),
+    )
 
     logger.debug("namespace_parts = %s", copier_answers.namespace_parts)
     namespace_path = cwd_path.joinpath("src", *copier_answers.namespace_parts)
