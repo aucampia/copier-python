@@ -131,8 +131,12 @@ def apply(copier_conf_json: str) -> None:
             subprocess.run(["git", "add", "."])
             subprocess.run(["git", "commit", "-m", "baseline"])
 
+    devtools_dir = cwd_path / "devtools"
     if not copier_answers.use_oci_devtools:
-        shutil.rmtree(cwd_path / "devtools")
+        logger.debug("removing devtools_dir %s", devtools_dir)
+        shutil.rmtree(devtools_dir)
+    else:
+        logger.debug("keeping devtools_dir")
 
 
 def main() -> None:
