@@ -3,17 +3,15 @@ from __future__ import annotations
 import argparse
 import distutils.dir_util
 import enum
-import itertools
 import json
 import logging
 import os
 import os.path
-import shutil
 import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping, Set
+from typing import Any, Mapping
 
 import yaml
 
@@ -31,10 +29,10 @@ class Variant(str, enum.Enum):
     MINIMAL_TYPER = "minimal_typer"
 
 
-class BuildTool(str, enum.Enum):
-    GNU_MAKE = "gnu-make"
-    GO_TASK = "go-task"
-    POE = "poe"
+# class BuildTool(str, enum.Enum):
+#     GNU_MAKE = "gnu-make"
+#     GO_TASK = "go-task"
+#     POE = "poe"
 
 
 # BUILD_TOOL_FILES = {
@@ -47,10 +45,10 @@ class BuildTool(str, enum.Enum):
 class CopierAnswers:
     python_package_fqname: str
     variant: Variant
-    build_tool: BuildTool
+    # build_tool: BuildTool
     git_init: bool
     git_commit: bool
-    use_oci_devtools: bool
+    # use_oci_devtools: bool
 
     def __post_init__(self) -> None:
         self.namespace_parts = self.python_package_fqname.split(".")
@@ -60,10 +58,10 @@ class CopierAnswers:
         return cls(
             python_package_fqname=values["python_package_fqname"],
             variant=Variant(values["variant"]),
-            build_tool=BuildTool(values["build_tool"]),
+            # build_tool=BuildTool(values["build_tool"]),
             git_init=values["git_init"],
             git_commit=values["git_commit"],
-            use_oci_devtools=values["use_oci_devtools"],
+            # use_oci_devtools=values["use_oci_devtools"],
         )
 
 
@@ -87,7 +85,8 @@ def apply(copier_conf_json: str) -> None:
 
     cwd_path = Path.cwd()
 
-    pkg_files_path = cwd_path.joinpath("pkg_files", copier_answers.variant.value)
+    pkg_files_path = TEMPLATE_PATH.joinpath("_pkg_files", copier_answers.variant.value)
+    # pkg_files_path = cwd_path.joinpath("pkg_files", copier_answers.variant.value)
     logger.debug(
         "cwd_path = %s, pkg_files_path = %r / %r",
         cwd_path,
@@ -115,8 +114,8 @@ def apply(copier_conf_json: str) -> None:
         update=1,
         verbose=1,
     )
-    logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
-    shutil.rmtree(pkg_files_path.parent)
+    # logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
+    # shutil.rmtree(pkg_files_path.parent)
 
     # remove_files: Set[str] = set(itertools.chain(*BUILD_TOOL_FILES.values()))
     # remove_files -= BUILD_TOOL_FILES.get(copier_answers.build_tool, set())
