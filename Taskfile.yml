@@ -15,6 +15,10 @@ tasks:
     desc: Configure this project
     cmds:
       - "{{.POETRY}} install {{.CLI_ARGS}}"
+  update:
+    desc: Update dependencies
+    cmds:
+      - "{{.POETRY}} update {{.CLI_ARGS}}"
   black:
     desc: Run black
     cmds:

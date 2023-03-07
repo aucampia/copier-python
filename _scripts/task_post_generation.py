@@ -50,6 +50,7 @@ class CopierAnswers:
     build_tool: BuildTool
     git_init: bool
     git_commit: bool
+    use_oci_devtools: bool
 
     def __post_init__(self) -> None:
         self.namespace_parts = self.python_package_fqname.split(".")
@@ -62,6 +63,7 @@ class CopierAnswers:
             build_tool=BuildTool(values["build_tool"]),
             git_init=values["git_init"],
             git_commit=values["git_commit"],
+            use_oci_devtools=values["use_oci_devtools"],
         )
 
 
@@ -86,6 +88,7 @@ def apply(copier_conf_json: str) -> None:
     cwd_path = Path.cwd()
 
     pkg_files_path = cwd_path.joinpath("pkg_files", copier_answers.variant.value)
+    logger.debug("cwd_path = %s, pkg_files_path = %s, pkg_files_path.absolute() = %s", cwd_path, pkg_files_path)
 
     logger.debug("namespace_parts = %s", copier_answers.namespace_parts)
     namespace_path = cwd_path.joinpath("src", *copier_answers.namespace_parts)
@@ -122,6 +125,9 @@ def apply(copier_conf_json: str) -> None:
         if copier_answers.git_commit:
             subprocess.run(["git", "add", "."])
             subprocess.run(["git", "commit", "-m", "baseline"])
+
+    if not copier_answers.use_oci_devtools:
+        pass
 
 
 def main() -> None:

@@ -60,3 +60,6 @@ build_tool:
 use_poetry_dynamic_versioning:
   type: bool
   default: false
+use_oci_devtools:
+  type: bool
+  default: false

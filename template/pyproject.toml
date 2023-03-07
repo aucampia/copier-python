@@ -127,7 +127,7 @@ sequence = [
 ]
 # {% endif %}
 
-# {% if use_poetry_dynamic_versioning == "y" %}
+# {% if use_poetry_dynamic_versioning is True %}
 # {% raw %}
 [tool.poetry-dynamic-versioning]
 enable = true
