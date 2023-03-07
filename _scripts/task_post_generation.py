@@ -125,13 +125,6 @@ def apply(copier_conf_json: str) -> None:
         logger.info("removing unused build file %s", remove_file)
         (cwd_path / remove_file).unlink()
 
-    devtools_dir = cwd_path / "devtools"
-    if not copier_answers.use_oci_devtools:
-        logger.debug("removing devtools_dir %s", devtools_dir)
-        shutil.rmtree(devtools_dir)
-    else:
-        logger.debug("keeping devtools_dir")
-
     if copier_answers.git_init:
         subprocess.run(["git", "init"])
         if copier_answers.git_commit:
