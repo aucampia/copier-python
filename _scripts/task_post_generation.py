@@ -37,10 +37,10 @@ class BuildTool(str, enum.Enum):
     POE = "poe"
 
 
-build_tool_files = {
-    BuildTool.GNU_MAKE: {"Makefile"},
-    BuildTool.GO_TASK: {"Taskfile.yml"},
-}
+# BUILD_TOOL_FILES = {
+#     BuildTool.GNU_MAKE: {"Makefile"},
+#     BuildTool.GO_TASK: {"Taskfile.yml"},
+# }
 
 
 @dataclass
@@ -118,12 +118,12 @@ def apply(copier_conf_json: str) -> None:
     logger.debug("will rmtree pkg_files_path %s", pkg_files_path.parent)
     shutil.rmtree(pkg_files_path.parent)
 
-    remove_files: Set[str] = set(itertools.chain(*build_tool_files.values()))
-    remove_files -= build_tool_files.get(copier_answers.build_tool, set())
-    logger.info("removing unused build files %s", remove_files)
-    for remove_file in remove_files:
-        logger.info("removing unused build file %s", remove_file)
-        (cwd_path / remove_file).unlink()
+    # remove_files: Set[str] = set(itertools.chain(*BUILD_TOOL_FILES.values()))
+    # remove_files -= BUILD_TOOL_FILES.get(copier_answers.build_tool, set())
+    # logger.info("removing unused build files %s", remove_files)
+    # for remove_file in remove_files:
+    #     logger.info("removing unused build file %s", remove_file)
+    #     (cwd_path / remove_file).unlink()
 
     if copier_answers.git_init:
         subprocess.run(["git", "init"])
