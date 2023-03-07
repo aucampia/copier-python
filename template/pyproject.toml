@@ -127,7 +127,7 @@ sequence = [
 ]
 # {% endif %}
 
-# {% if use_poetry_dynamic_versioning is True %}
+# {% if use_poetry_dynamic_versioning is true %}
 # {% raw %}
 [tool.poetry-dynamic-versioning]
 enable = true
@@ -145,7 +145,7 @@ files=["src/**/_version.py"]
 # {% endif %}
 
 [build-system]
-# {% if use_poetry_dynamic_versioning == "y" %}
+# {% if use_poetry_dynamic_versioning is true %}
 requires = ["setuptools","poetry-core>=1.0.0","poetry-dynamic-versioning"]
 # {% else %}
 requires = ["setuptools","poetry-core>=1.0.0"]
