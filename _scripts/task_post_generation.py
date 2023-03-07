@@ -132,7 +132,7 @@ def apply(copier_conf_json: str) -> None:
             subprocess.run(["git", "commit", "-m", "baseline"])
 
     if not copier_answers.use_oci_devtools:
-        pass
+        shutil.rmtree(cwd_path / "devtools")
 
 
 def main() -> None:
