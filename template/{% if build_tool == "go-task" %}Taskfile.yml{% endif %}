@@ -35,7 +35,7 @@ tasks:
   mypy:
     desc: Run mypy
     cmds:
-      - "{{.RUN_PYTHON}} -m mypy --show-error-context --show-error-codes"
+      - "{{.RUN_PYTHON}} -m mypy --show-error-context --show-error-codes {{.CLI_ARGS}}"
   codespell:
     desc: Run codespell
     cmds:
