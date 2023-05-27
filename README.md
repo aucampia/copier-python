@@ -25,7 +25,6 @@ cookiecutter -v gh:aucampia/cookiecutter-python --overwrite-if-exists --output-d
 cookiecutter -vvvv ~/sw/d/github.com/aucampia/cookiecutter-python --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
 cruft create ~/sw/d/github.com/aucampia/cookiecutter-python
 
-
 \rm -rv var/baked/tmp
 
 cookiecutter -vvvv ./ --overwrite-if-exists --no-input --config-file tests/data/cookie-config/basic.yaml --output-dir var/baked/tmp
