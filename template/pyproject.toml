@@ -19,7 +19,7 @@ packages = [
 python = "^{{ python_version }}"
 pydantic = "^1.10.4"
 PyYAML = "^6.0"
-# {% if variant in ["basic", "everything", "minimal-typer"] %}
+# {% if variant in ["basic", "everything", "minimal_typer"] %}
 typer = "0.7.0"
 # {% endif %}
 # {% if variant in ["basic", "everything"] %}
